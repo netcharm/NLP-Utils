@@ -1,0 +1,975 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="edSrc.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="edSrc.Font" type="System.Drawing.Font, System.Drawing">
+    <value>宋体, 10pt</value>
+  </data>
+  <data name="edSrc.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="edSrc.MaxLength" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="edSrc.Multiline" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="edSrc.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
+    <value>Both</value>
+  </data>
+  <data name="edSrc.Size" type="System.Drawing.Size, System.Drawing">
+    <value>350, 375</value>
+  </data>
+  <data name="edSrc.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;edSrc.Name" xml:space="preserve">
+    <value>edSrc</value>
+  </data>
+  <data name="&gt;&gt;edSrc.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;edSrc.Parent" xml:space="preserve">
+    <value>layoutMain</value>
+  </data>
+  <data name="&gt;&gt;edSrc.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="btnSegment.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 6</value>
+  </data>
+  <data name="btnSegment.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnSegment.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="btnSegment.Text" xml:space="preserve">
+    <value>Segment</value>
+  </data>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="btnSegment.ToolTip" xml:space="preserve">
+    <value>Take the Segments from Source Text</value>
+  </data>
+  <data name="&gt;&gt;btnSegment.Name" xml:space="preserve">
+    <value>btnSegment</value>
+  </data>
+  <data name="&gt;&gt;btnSegment.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSegment.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnSegment.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="edDst.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="edDst.Font" type="System.Drawing.Font, System.Drawing">
+    <value>宋体, 10pt</value>
+  </data>
+  <data name="edDst.Location" type="System.Drawing.Point, System.Drawing">
+    <value>359, 3</value>
+  </data>
+  <data name="edDst.Multiline" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="edDst.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
+    <value>Both</value>
+  </data>
+  <data name="edDst.Size" type="System.Drawing.Size, System.Drawing">
+    <value>350, 375</value>
+  </data>
+  <data name="edDst.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;edDst.Name" xml:space="preserve">
+    <value>edDst</value>
+  </data>
+  <data name="&gt;&gt;edDst.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;edDst.Parent" xml:space="preserve">
+    <value>layoutMain</value>
+  </data>
+  <data name="&gt;&gt;edDst.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="btnTokenizer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>90, 6</value>
+  </data>
+  <data name="btnTokenizer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnTokenizer.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="btnTokenizer.Text" xml:space="preserve">
+    <value>Tokenizer</value>
+  </data>
+  <data name="btnTokenizer.ToolTip" xml:space="preserve">
+    <value>Take the Tokenizer from Source Text</value>
+  </data>
+  <data name="&gt;&gt;btnTokenizer.Name" xml:space="preserve">
+    <value>btnTokenizer</value>
+  </data>
+  <data name="&gt;&gt;btnTokenizer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnTokenizer.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnTokenizer.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="btnSummary.Location" type="System.Drawing.Point, System.Drawing">
+    <value>252, 6</value>
+  </data>
+  <data name="btnSummary.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnSummary.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="btnSummary.Text" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="btnSummary.ToolTip" xml:space="preserve">
+    <value>Take the Summary from Source Text</value>
+  </data>
+  <data name="&gt;&gt;btnSummary.Name" xml:space="preserve">
+    <value>btnSummary</value>
+  </data>
+  <data name="&gt;&gt;btnSummary.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSummary.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnSummary.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="btnKeyword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>171, 6</value>
+  </data>
+  <data name="btnKeyword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnKeyword.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="btnKeyword.Text" xml:space="preserve">
+    <value>Keyword</value>
+  </data>
+  <data name="btnKeyword.ToolTip" xml:space="preserve">
+    <value>Take the Keyword from Source Text</value>
+  </data>
+  <data name="&gt;&gt;btnKeyword.Name" xml:space="preserve">
+    <value>btnKeyword</value>
+  </data>
+  <data name="&gt;&gt;btnKeyword.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnKeyword.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnKeyword.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="layoutMain.ColumnCount" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="btnOCR.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnOCR.Location" type="System.Drawing.Point, System.Drawing">
+    <value>414, 37</value>
+  </data>
+  <data name="btnOCR.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnOCR.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="btnOCR.Text" xml:space="preserve">
+    <value>OCR Clip</value>
+  </data>
+  <data name="&gt;&gt;btnOCR.Name" xml:space="preserve">
+    <value>btnOCR</value>
+  </data>
+  <data name="&gt;&gt;btnOCR.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOCR.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnOCR.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lblInfo.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="lblInfo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 37</value>
+  </data>
+  <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 21</value>
+  </data>
+  <data name="lblInfo.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="lblInfo.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="lblInfo.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Name" xml:space="preserve">
+    <value>lblInfo</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Parent" xml:space="preserve">
+    <value>pnlOption</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="chkTermNature.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="chkTermNature.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="chkTermNature.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="chkTermNature.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="chkTermNature.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="chkTermNature.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 8</value>
+  </data>
+  <data name="chkTermNature.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 16</value>
+  </data>
+  <data name="chkTermNature.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="chkTermNature.Text" xml:space="preserve">
+    <value>Show Term Nature</value>
+  </data>
+  <data name="&gt;&gt;chkTermNature.Name" xml:space="preserve">
+    <value>chkTermNature</value>
+  </data>
+  <data name="&gt;&gt;chkTermNature.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkTermNature.Parent" xml:space="preserve">
+    <value>pnlOption</value>
+  </data>
+  <data name="&gt;&gt;chkTermNature.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="pnlOption.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Right</value>
+  </data>
+  <data name="pnlOption.Location" type="System.Drawing.Point, System.Drawing">
+    <value>562, 0</value>
+  </data>
+  <data name="pnlOption.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>8, 8, 8, 8</value>
+  </data>
+  <data name="pnlOption.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 66</value>
+  </data>
+  <data name="pnlOption.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;pnlOption.Name" xml:space="preserve">
+    <value>pnlOption</value>
+  </data>
+  <data name="&gt;&gt;pnlOption.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;pnlOption.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;pnlOption.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="btnWordFreq.Location" type="System.Drawing.Point, System.Drawing">
+    <value>414, 6</value>
+  </data>
+  <data name="btnWordFreq.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnWordFreq.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="btnWordFreq.Text" xml:space="preserve">
+    <value>Word Freq</value>
+  </data>
+  <data name="&gt;&gt;btnWordFreq.Name" xml:space="preserve">
+    <value>btnWordFreq</value>
+  </data>
+  <data name="&gt;&gt;btnWordFreq.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnWordFreq.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnWordFreq.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="btnSrc2PyTM.Location" type="System.Drawing.Point, System.Drawing">
+    <value>333, 37</value>
+  </data>
+  <data name="btnSrc2PyTM.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnSrc2PyTM.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="btnSrc2PyTM.Text" xml:space="preserve">
+    <value>Pinyin M</value>
+  </data>
+  <data name="btnSrc2PyTM.ToolTip" xml:space="preserve">
+    <value>Convert Source Text To Pinyin with Tone mark</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyTM.Name" xml:space="preserve">
+    <value>btnSrc2PyTM</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyTM.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyTM.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyTM.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="btnSrc2PyT.Location" type="System.Drawing.Point, System.Drawing">
+    <value>252, 37</value>
+  </data>
+  <data name="btnSrc2PyT.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnSrc2PyT.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="btnSrc2PyT.Text" xml:space="preserve">
+    <value>Pinyin T</value>
+  </data>
+  <data name="btnSrc2PyT.ToolTip" xml:space="preserve">
+    <value>Convert Source Text To Pinyin with Tone number</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyT.Name" xml:space="preserve">
+    <value>btnSrc2PyT</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyT.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyT.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2PyT.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="btnSrc2Py.Location" type="System.Drawing.Point, System.Drawing">
+    <value>171, 37</value>
+  </data>
+  <data name="btnSrc2Py.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnSrc2Py.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="btnSrc2Py.Text" xml:space="preserve">
+    <value>Pinyin</value>
+  </data>
+  <data name="btnSrc2Py.ToolTip" xml:space="preserve">
+    <value>Convert Source Text To Pinyin</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2Py.Name" xml:space="preserve">
+    <value>btnSrc2Py</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2Py.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2Py.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnSrc2Py.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="btnTC2SC.Location" type="System.Drawing.Point, System.Drawing">
+    <value>90, 37</value>
+  </data>
+  <data name="btnTC2SC.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnTC2SC.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="btnTC2SC.Text" xml:space="preserve">
+    <value>TC-&gt;SC</value>
+  </data>
+  <data name="btnTC2SC.ToolTip" xml:space="preserve">
+    <value>Convert Source Text To Simplified Chinese</value>
+  </data>
+  <data name="&gt;&gt;btnTC2SC.Name" xml:space="preserve">
+    <value>btnTC2SC</value>
+  </data>
+  <data name="&gt;&gt;btnTC2SC.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnTC2SC.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnTC2SC.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="btnSC2TC.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 37</value>
+  </data>
+  <data name="btnSC2TC.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnSC2TC.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="btnSC2TC.Text" xml:space="preserve">
+    <value>SC-&gt;TC</value>
+  </data>
+  <data name="btnSC2TC.ToolTip" xml:space="preserve">
+    <value>Convert Source Text To Traditional Chinese</value>
+  </data>
+  <data name="&gt;&gt;btnSC2TC.Name" xml:space="preserve">
+    <value>btnSC2TC</value>
+  </data>
+  <data name="&gt;&gt;btnSC2TC.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSC2TC.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnSC2TC.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="btnPhrase.Location" type="System.Drawing.Point, System.Drawing">
+    <value>333, 6</value>
+  </data>
+  <data name="btnPhrase.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnPhrase.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="btnPhrase.Text" xml:space="preserve">
+    <value>Phrase</value>
+  </data>
+  <data name="btnPhrase.ToolTip" xml:space="preserve">
+    <value>Take the Phrase from Source Text</value>
+  </data>
+  <data name="&gt;&gt;btnPhrase.Name" xml:space="preserve">
+    <value>btnPhrase</value>
+  </data>
+  <data name="&gt;&gt;btnPhrase.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnPhrase.Parent" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;btnPhrase.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="pnlTools.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="pnlTools.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 384</value>
+  </data>
+  <data name="pnlTools.Size" type="System.Drawing.Size, System.Drawing">
+    <value>706, 66</value>
+  </data>
+  <data name="pnlTools.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;pnlTools.Name" xml:space="preserve">
+    <value>pnlTools</value>
+  </data>
+  <data name="&gt;&gt;pnlTools.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;pnlTools.Parent" xml:space="preserve">
+    <value>layoutMain</value>
+  </data>
+  <data name="&gt;&gt;pnlTools.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="layoutMain.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="layoutMain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="layoutMain.RowCount" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="layoutMain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>712, 453</value>
+  </data>
+  <data name="layoutMain.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;layoutMain.Name" xml:space="preserve">
+    <value>layoutMain</value>
+  </data>
+  <data name="&gt;&gt;layoutMain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;layoutMain.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;layoutMain.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="layoutMain.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="pnlTools" Row="1" RowSpan="1" Column="0" ColumnSpan="2" /&gt;&lt;Control Name="edSrc" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="edDst" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,50,Percent,50" /&gt;&lt;Rows Styles="Percent,100,Absolute,72" /&gt;&lt;/TableLayoutSettings&gt;</value>
+  </data>
+  <metadata name="cmActions.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>93, 20</value>
+  </metadata>
+  <data name="cmiActionFilterSub.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiActionFilterSub.Text" xml:space="preserve">
+    <value>Filter Sub</value>
+  </data>
+  <data name="cmiActionFilterLrc.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiActionFilterLrc.Text" xml:space="preserve">
+    <value>Filter LRC</value>
+  </data>
+  <data name="cmiActionFilterMlTag.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiActionFilterMlTag.Text" xml:space="preserve">
+    <value>Filter HTML/XML Tags</value>
+  </data>
+  <data name="cmiSepCutMethod.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 6</value>
+  </data>
+  <data name="cmiCutMethodDefault.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodDefault.Text" xml:space="preserve">
+    <value>Default Tokenizer</value>
+  </data>
+  <data name="cmiCutMethodStandard.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodStandard.Text" xml:space="preserve">
+    <value>Standard Tokenizer</value>
+  </data>
+  <data name="cmiCutMethodNLP.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodNLP.Text" xml:space="preserve">
+    <value>NLP Tokenizer</value>
+  </data>
+  <data name="cmiCutMethodIndex.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodIndex.Text" xml:space="preserve">
+    <value>Index Tokenizer</value>
+  </data>
+  <data name="cmiCutMethodNShort.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodNShort.Text" xml:space="preserve">
+    <value>N-Short Tokenizer</value>
+  </data>
+  <data name="cmiCutMethodShortest.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodShortest.Text" xml:space="preserve">
+    <value>Shortest Tokenizer</value>
+  </data>
+  <data name="cmiCutMethodCRF.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodCRF.Text" xml:space="preserve">
+    <value>CRF Tokenizer</value>
+  </data>
+  <data name="cmiCutMethodHighSpeed.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutMethodHighSpeed.Text" xml:space="preserve">
+    <value>HighSpeed Tokenizer</value>
+  </data>
+  <data name="cmiSepCutRecognize.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 6</value>
+  </data>
+  <data name="cmiCutRecognizeChineseName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutRecognizeChineseName.Text" xml:space="preserve">
+    <value>Recognize Chinese Name</value>
+  </data>
+  <data name="cmiCutRecognizeTranslatedName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutRecognizeTranslatedName.Text" xml:space="preserve">
+    <value>Recognize Translated Name</value>
+  </data>
+  <data name="cmiCutRecognizeJapaneseName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutRecognizeJapaneseName.Text" xml:space="preserve">
+    <value>Recognize Japanese Name</value>
+  </data>
+  <data name="cmiCutRecognizePlace.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutRecognizePlace.Text" xml:space="preserve">
+    <value>Recognize Place</value>
+  </data>
+  <data name="cmiCutRecognizeOrganization.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCutRecognizeOrganization.Text" xml:space="preserve">
+    <value>Recognize Organization</value>
+  </data>
+  <data name="cmiSepToPy.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 6</value>
+  </data>
+  <data name="cmiPyShowPunctuation.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiPyShowPunctuation.Text" xml:space="preserve">
+    <value>Show pinyin punctuation</value>
+  </data>
+  <data name="cmiPySeprateCommas.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiPySeprateCommas.Text" xml:space="preserve">
+    <value>Separate pinyin with commas</value>
+  </data>
+  <data name="cmiSepReload.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 6</value>
+  </data>
+  <data name="cmiCustomDictReload.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="cmiCustomDictReload.Text" xml:space="preserve">
+    <value>Reload UserDict, StopWords</value>
+  </data>
+  <data name="cmActions.Size" type="System.Drawing.Size, System.Drawing">
+    <value>247, 446</value>
+  </data>
+  <data name="&gt;&gt;cmActions.Name" xml:space="preserve">
+    <value>cmActions</value>
+  </data>
+  <data name="&gt;&gt;cmActions.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>712, 453</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>720, 480</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>HanLP</value>
+  </data>
+  <data name="&gt;&gt;cmiActionFilterSub.Name" xml:space="preserve">
+    <value>cmiActionFilterSub</value>
+  </data>
+  <data name="&gt;&gt;cmiActionFilterSub.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiActionFilterLrc.Name" xml:space="preserve">
+    <value>cmiActionFilterLrc</value>
+  </data>
+  <data name="&gt;&gt;cmiActionFilterLrc.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiActionFilterMlTag.Name" xml:space="preserve">
+    <value>cmiActionFilterMlTag</value>
+  </data>
+  <data name="&gt;&gt;cmiActionFilterMlTag.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiSepCutMethod.Name" xml:space="preserve">
+    <value>cmiSepCutMethod</value>
+  </data>
+  <data name="&gt;&gt;cmiSepCutMethod.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodDefault.Name" xml:space="preserve">
+    <value>cmiCutMethodDefault</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodDefault.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodStandard.Name" xml:space="preserve">
+    <value>cmiCutMethodStandard</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodStandard.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodNLP.Name" xml:space="preserve">
+    <value>cmiCutMethodNLP</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodNLP.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodIndex.Name" xml:space="preserve">
+    <value>cmiCutMethodIndex</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodIndex.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodNShort.Name" xml:space="preserve">
+    <value>cmiCutMethodNShort</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodNShort.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodShortest.Name" xml:space="preserve">
+    <value>cmiCutMethodShortest</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodShortest.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodCRF.Name" xml:space="preserve">
+    <value>cmiCutMethodCRF</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodCRF.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodHighSpeed.Name" xml:space="preserve">
+    <value>cmiCutMethodHighSpeed</value>
+  </data>
+  <data name="&gt;&gt;cmiCutMethodHighSpeed.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiSepCutRecognize.Name" xml:space="preserve">
+    <value>cmiSepCutRecognize</value>
+  </data>
+  <data name="&gt;&gt;cmiSepCutRecognize.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeChineseName.Name" xml:space="preserve">
+    <value>cmiCutRecognizeChineseName</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeChineseName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeTranslatedName.Name" xml:space="preserve">
+    <value>cmiCutRecognizeTranslatedName</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeTranslatedName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeJapaneseName.Name" xml:space="preserve">
+    <value>cmiCutRecognizeJapaneseName</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeJapaneseName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizePlace.Name" xml:space="preserve">
+    <value>cmiCutRecognizePlace</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizePlace.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeOrganization.Name" xml:space="preserve">
+    <value>cmiCutRecognizeOrganization</value>
+  </data>
+  <data name="&gt;&gt;cmiCutRecognizeOrganization.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiSepToPy.Name" xml:space="preserve">
+    <value>cmiSepToPy</value>
+  </data>
+  <data name="&gt;&gt;cmiSepToPy.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiPyShowPunctuation.Name" xml:space="preserve">
+    <value>cmiPyShowPunctuation</value>
+  </data>
+  <data name="&gt;&gt;cmiPyShowPunctuation.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiPySeprateCommas.Name" xml:space="preserve">
+    <value>cmiPySeprateCommas</value>
+  </data>
+  <data name="&gt;&gt;cmiPySeprateCommas.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiSepReload.Name" xml:space="preserve">
+    <value>cmiSepReload</value>
+  </data>
+  <data name="&gt;&gt;cmiSepReload.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmiCustomDictReload.Name" xml:space="preserve">
+    <value>cmiCustomDictReload</value>
+  </data>
+  <data name="&gt;&gt;cmiCustomDictReload.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolTip.Name" xml:space="preserve">
+    <value>toolTip</value>
+  </data>
+  <data name="&gt;&gt;toolTip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>MainForm</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+</root>
