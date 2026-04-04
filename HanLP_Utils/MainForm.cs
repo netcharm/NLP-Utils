@@ -290,7 +290,7 @@ namespace HanLP_Utils
             try
             {
                 List<string> stopwords = new List<string>();
-                stopwords.AddRange(new string[] { "。", "、", "，", "　", "　　", "□", "□□", "一", "一一" });
+                stopwords.AddRange(new string[] { "。", "、", "，", "　", "　　", "...", "…", "□", "□□", "一", "一一" });
 
                 List<string> stopfile = new List<string>() {
                     Path.Combine(ROOT, "data", "dictionary", "stopwords.txt").Replace("\\", "/"),
