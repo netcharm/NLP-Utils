@@ -236,14 +236,20 @@ public partial class MainWindow : Window
         var words = text + "\n";
 #pragma warning disable IDE0079 // 请删除不必要的忽略
 #pragma warning disable SYSLIB1045 // 转换为“GeneratedRegexAttribute”。
-        if (Regex.IsMatch(words, @"^[\s\t]*?(\d+)[\t\s]+(.+?)(\r\n|\n\r|\n|\r)", RegexOptions.IgnoreCase))
+        var results = new List<string>();
+        var lines = Regex.Split(words, @"(\n\r|\r\n|\n|\r)", RegexOptions.IgnoreCase).Where(l => !string.IsNullOrEmpty(l.Trim()));
+        foreach (var line in lines)
         {
-            result = Regex.Replace(words + "\n", @"(\d+)[\t\s]+(.+?)(\r\n|\n\r|\n|\r)", "$1\t$2\n", RegexOptions.IgnoreCase).Trim();
+            if (Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(.+?)$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(\d+)$", RegexOptions.IgnoreCase))
+            {
+                results.Add(Regex.Replace(line + "\n", @"(\d+)[\t\s]+(.+?)$", "$1\t$2\n", RegexOptions.IgnoreCase).Trim());
+            }
+            else if (Regex.IsMatch(line, @"^[\s\t]*?(.+?)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d+)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase))
+            {
+                results.Add(Regex.Replace(line + "\n", @"(.+?)[\t\s]+(\d+)$", "$2\t$1\n", RegexOptions.IgnoreCase).Trim());
+            }
         }
-        else if (Regex.IsMatch(words, @"^[\s\t]*?(.+?)[\t\s]+(\d+)(\r\n|\n\r|\n|\r)", RegexOptions.IgnoreCase))
-        {
-            result = Regex.Replace(words + "\n", @"(.+?)[\t\s]+(\d+)(\r\n|\n\r|\n|\r)", "$2\t$1\n", RegexOptions.IgnoreCase).Trim();
-        }
+        result = string.Join("\n", results);
 #pragma warning restore SYSLIB1045 // 转换为“GeneratedRegexAttribute”。
         return (result.Trim());
 #pragma warning restore IDE0079 // 请删除不必要的忽略
@@ -258,10 +264,12 @@ public partial class MainWindow : Window
         else
         {
             var words = PreprocessText(text);
-            return words
+            var scores = words
                     .Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .Select(x => x.Trim().Split("\t"))
-                    .Select(x => new WordScore(Score: int.Parse(x[0]), Word: x[1]));
+                    .Select(x => x.Trim().Split("\t")).Where(x => x.Length >= 2)
+                    .Select(x => new WordScore(Score: int.Parse(x[0]), Word: x[1]))
+                    .Where(x => !string.IsNullOrEmpty(x.Word.Trim()));
+            return (scores);
         }
     }
 
