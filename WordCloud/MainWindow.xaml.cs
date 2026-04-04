@@ -25,7 +25,7 @@ public partial class MainWindow : Window
 
     public int CloudWidth { get;set; } = 1024;
     public int CloudHeight { get;set; } = 1024;
-    public string CloudFont { get; set; } = "Consolas";
+    public string CloudFontFamily { get; set; } = "Consolas";
 
     #region Word Cloud Helper
     static IEnumerable<WordScore> MakeDemoScore()
@@ -269,9 +269,9 @@ public partial class MainWindow : Window
     {
         try
         {
-            Sdcb.WordClouds.WordCloud wc = Sdcb.WordClouds.WordCloud.Create(new WordCloudOptions(CloudWidth, CloudHeight, MakeScore(WordsTextBox.Text))
+            Sdcb.WordClouds.WordCloud wc = Sdcb.WordClouds.WordCloud.Create(new WordCloudOptions(Math.Max(128, CloudWidth), Math.Max(128, CloudHeight), MakeScore(WordsTextBox.Text))
             {
-                FontManager = new FontManager([SKTypeface.FromFamilyName(CloudFont)])
+                FontManager = new FontManager([SKTypeface.FromFamilyName(CloudFontFamily)])
             });
             PngBytes = wc.ToSKBitmap().Encode(SKEncodedImageFormat.Png, 100).AsSpan().ToArray();
             WordCloudImage.Source = BitmapFrame.Create(new MemoryStream(PngBytes), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
@@ -290,6 +290,51 @@ public partial class MainWindow : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
+        #region allow drag and drop text
+        WordsTextBox.AllowDrop = true;
+        WordsTextBox.DragOver += (s, e) =>
+        {
+            if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText) || e.Data.GetDataPresent(DataFormats.OemText))
+            {
+                e.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+            e.Handled = true;
+        };
+        WordsTextBox.Drop += (s, e) =>
+        {
+            if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText) || e.Data.GetDataPresent(DataFormats.OemText))
+            {
+                try 
+                { 
+                    var text = (e.Data.GetData(DataFormats.Text) ?? e.Data.GetData(DataFormats.UnicodeText) ?? e.Data.GetData(DataFormats.OemText) ?? string.Empty) as string;
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        WordsTextBox.Text = text;
+                    }
+                    e.Handled = true;
+                }
+                catch { }
+            }
+        };
+        #endregion
+
+        #region bind cloud options to UI
+        CloudFontValue.ItemsSource = Fonts.SystemFontFamilies;
+        CloudFontValue.Text = CloudFontFamily;
+        CloudFontValue.SelectedIndex = CloudFontValue.Items.IndexOf(CloudFontFamily);
+
+        CloudWidthValue.SetBinding(TextBox.TextProperty, new Binding(nameof(CloudWidth)) { Source = this, Mode = BindingMode.TwoWay });
+        CloudHeightValue.SetBinding(TextBox.TextProperty, new Binding(nameof(CloudHeight)) { Source = this, Mode = BindingMode.TwoWay });
+        CloudFontValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudFontFamily)) { Source = this, Mode = BindingMode.TwoWay });
+        #endregion
+
+        WordsTextBox.Focusable = true;
+        WordsTextBox.Focus();
+
         //MakeWordsCloud();
     }
 
@@ -300,6 +345,22 @@ public partial class MainWindow : Window
 
     private void SaveWordsCloud_Click(object sender, RoutedEventArgs e)
     {
-        if (PngBytes is not null) File.WriteAllBytes($"specified-font.png", PngBytes);
+        if (PngBytes is not null)
+        {
+            var dlg = new Microsoft.Win32.SaveFileDialog()
+            {
+                AddToRecent = false,
+                AddExtension = true,
+                OverwritePrompt = true,
+                CheckFileExists = false,
+                Filter = "PNG Image|*.png",
+                DefaultExt = "png",
+                FileName = $"wordcloud-{DateTime.Now:yyyyMMddhhmmss}.png"
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                File.WriteAllBytes(dlg.FileName, PngBytes);
+            }
+        }
     }
 }
