@@ -304,14 +304,23 @@ namespace HanLP_Utils
                     if (File.Exists(file))
                     {
                         var lines = File.ReadAllLines(file);
-                        stopwords.AddRange(lines.Select(w => w.Trim()).Where(w => !string.IsNullOrEmpty(w)));
+                        //stopwords.AddRange(lines.Select(w => w.Trim()).Where(w => !string.IsNullOrEmpty(w)));
+                        stopwords.AddRange(lines.Select(w => w.TrimEnd()).Where(w => !string.IsNullOrEmpty(w)));
                     }
                 }
 
                 foreach (var w in stopwords)
                 {
-                    if (CustomDictionary.contains(w)) CustomDictionary.remove(w);
-                    if (!CoreStopWordDictionary.contains(w)) CoreStopWordDictionary.add(w);
+                    try
+                    {
+                        if (CustomDictionary.contains(w)) CustomDictionary.remove(w);
+                    }
+                    catch { }
+                    try
+                    {
+                        if (!CoreStopWordDictionary.contains(w)) CoreStopWordDictionary.add(w);
+                    }
+                    catch { }
                 }
             }
             catch (Exception ex)
