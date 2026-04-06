@@ -25,6 +25,7 @@ public partial class MainWindow : Window
 
     public int CloudWidth { get;set; } = 1024;
     public int CloudHeight { get;set; } = 1024;
+    public TextOrientations CloudOrientation { get;set; } = TextOrientations.PreferHorizontal;
     public string CloudFontFamily { get; set; } = "Consolas";
 
     #region Word Cloud Helper
@@ -279,6 +280,7 @@ public partial class MainWindow : Window
         {
             Sdcb.WordClouds.WordCloud wc = Sdcb.WordClouds.WordCloud.Create(new WordCloudOptions(Math.Max(128, CloudWidth), Math.Max(128, CloudHeight), MakeScore(WordsTextBox.Text))
             {
+                TextOrientation = CloudOrientation,
                 FontManager = new FontManager([SKTypeface.FromFamilyName(CloudFontFamily)])
             });
             PngBytes = wc.ToSKBitmap().Encode(SKEncodedImageFormat.Png, 100).AsSpan().ToArray();
@@ -335,9 +337,14 @@ public partial class MainWindow : Window
         CloudFontValue.Text = CloudFontFamily;
         CloudFontValue.SelectedIndex = CloudFontValue.Items.IndexOf(CloudFontFamily);
 
+        CloudOrientationValue.ItemsSource = Enum.GetValues(typeof(TextOrientations)).Cast<TextOrientations>();
+        CloudOrientationValue.Text = CloudOrientationValue.Items.OfType<TextOrientations>().FirstOrDefault(o => o == CloudOrientation).ToString();
+        CloudOrientationValue.SelectedIndex = CloudOrientationValue.Items.IndexOf(CloudOrientation);
+
         CloudWidthValue.SetBinding(TextBox.TextProperty, new Binding(nameof(CloudWidth)) { Source = this, Mode = BindingMode.TwoWay });
         CloudHeightValue.SetBinding(TextBox.TextProperty, new Binding(nameof(CloudHeight)) { Source = this, Mode = BindingMode.TwoWay });
         CloudFontValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudFontFamily)) { Source = this, Mode = BindingMode.TwoWay });
+        CloudOrientationValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudOrientation)) { Source = this, Mode = BindingMode.TwoWay });
         #endregion
 
         WordsTextBox.Focusable = true;

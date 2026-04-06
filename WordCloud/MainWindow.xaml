@@ -44,8 +44,9 @@
             <TextBlock Grid.Row="1" Grid.Column="0" x:Name="CloudHeightLabel" Text="H:" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="24" />
             <TextBox Grid.Row="1" Grid.Column="1" x:Name="CloudHeightValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="4" Width="64" FontFamily="{StaticResource MonoSpaceFamily}" />
             <TextBlock Grid.Row="0" Grid.Column="2" x:Name="CloudFontLabel" Text="Font:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4" MinWidth="32" />
-            <!--<TextBox Grid.Row="0" Grid.Column="3" x:Name="CloudFontValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="128" MaxWidth="384"/>-->
             <ComboBox Grid.Row="0" Grid.Column="3" x:Name="CloudFontValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="128" MaxWidth="384" IsReadOnly="True"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" x:Name="CloudOrientationLabel" Text="Orientation:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4" MinWidth="32" />
+            <ComboBox Grid.Row="1" Grid.Column="3" x:Name="CloudOrientationValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="128" MaxWidth="384" IsReadOnly="True"/>
         </Grid>
     </Grid>
 </Window>
