@@ -9,26 +9,30 @@
         Title="Word Cloud Generator" Height="720" Width="1280" Loaded="Window_Loaded">
     <Grid Margin="4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.382*" MinWidth="256"/>
+            <ColumnDefinition Width="Auto" MinWidth="256"/>
             <ColumnDefinition Width="0.618*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto" MaxHeight="72"/>
         </Grid.RowDefinitions>
-        <Grid.Background>
-            <ImageBrush ImageSource="pack://application:,,,/WordCloud;component/Resources/checkerboard.png" TileMode="Tile" Opacity="0.20" ViewportUnits="Absolute" Viewport="0,0,32,32"/>
-        </Grid.Background>
-        <TextBox Grid.Column="0" Grid.Row="0" Margin="4" Name="WordsTextBox" TextWrapping="Wrap" AcceptsReturn="True" 
+        <TextBox Grid.Column="0" Grid.Row="0" Name="WordsTextBox" TextWrapping="Wrap" AcceptsReturn="True" 
+                 Margin="4" MaxWidth="400"
                  FontFamily="{StaticResource MonoSpaceFamily}" FontSize="{StaticResource MonoSpaceFontSize}"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <Image Grid.Column="1" Grid.Row="0" Margin="4" Name="WordCloudImage" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" StretchDirection="DownOnly" />
-        <WrapPanel Grid.Column="0" Grid.Row="1" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center" Background="AliceBlue">
-            <Button Margin="8" Name="SaveWordsCloud" Content="Save" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" Width="64" Click="SaveWordsCloud_Click" />
-            <Button Margin="8" Name="BuildWordsCloud" Content="Build" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" Width="64" Click="BuildWordsCloud_Click" />
+        <Border Grid.Column="1" Grid.Row="0" Margin="4" BorderBrush="DarkGray" BorderThickness="1">
+            <Border.Background>
+                <ImageBrush ImageSource="pack://application:,,,/WordCloud;component/Resources/checkerboard.png" TileMode="Tile" Opacity="0.20" ViewportUnits="Absolute" Viewport="0,0,32,32"/>
+            </Border.Background>
+            <Image Margin="4" Name="WordCloudImage" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" StretchDirection="DownOnly" />
+        </Border>
+        <WrapPanel Grid.Column="0" Grid.Row="1" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center" >
+            <Button Name="SaveWordsCloud" x:Uid="SaveWordsCloud" Content="Save" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="64" Margin="8" Padding="4" Click="SaveWordsCloud_Click" />
+            <Button Name="BuildWordsCloud" x:Uid="BuildWordsCloud" Content="Build" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="64" Margin="8" Padding="4" Click="BuildWordsCloud_Click" />
+            <Border Name="BuildWordsCloudState" x:Uid="BuildWordsCloudState" Width="32" Height="32" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Wait" Visibility="Hidden"/>
         </WrapPanel>
-        <Grid Grid.Column="1" Grid.Row="1" Margin="4" VerticalAlignment="Center"  HorizontalAlignment="Center" Background="AliceBlue" >
+        <Grid Grid.Column="1" Grid.Row="1" Margin="4" VerticalAlignment="Center"  HorizontalAlignment="Center" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -39,14 +43,14 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="CloudWidthLabel" Text="W:" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="24" />
-            <TextBox Grid.Row="0" Grid.Column="1" x:Name="CloudWidthValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="4" Width="64" FontFamily="{StaticResource MonoSpaceFamily}" />
-            <TextBlock Grid.Row="1" Grid.Column="0" x:Name="CloudHeightLabel" Text="H:" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="24" />
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="CloudHeightValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="4" Width="64" FontFamily="{StaticResource MonoSpaceFamily}" />
-            <TextBlock Grid.Row="0" Grid.Column="2" x:Name="CloudFontLabel" Text="Font:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4" MinWidth="32" />
-            <ComboBox Grid.Row="0" Grid.Column="3" x:Name="CloudFontValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="128" MaxWidth="384" IsReadOnly="True"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" x:Name="CloudOrientationLabel" Text="Orientation:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4" MinWidth="32" />
-            <ComboBox Grid.Row="1" Grid.Column="3" x:Name="CloudOrientationValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="128" MaxWidth="384" IsReadOnly="True"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="CloudWidthLabel" x:Uid="CloudWidthLabel" Text="W:" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="24" />
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="CloudWidthValue" x:Uid="CloudWidthValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="4" Width="64" FontFamily="{StaticResource MonoSpaceFamily}" TextChanged="CloudWidthValue_TextChanged" />
+            <TextBlock Grid.Row="1" Grid.Column="0" x:Name="CloudHeightLabel" x:Uid="CloudHeightLabel" Text="H:" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="24" />
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="CloudHeightValue" x:Uid="CloudHeightValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="4" Width="64" FontFamily="{StaticResource MonoSpaceFamily}" TextChanged="CloudHeightValue_TextChanged" />
+            <TextBlock Grid.Row="0" Grid.Column="2" x:Name="CloudFontLabel" x:Uid="CloudFontLabel" Text="Font:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4" MinWidth="32" />
+            <ComboBox Grid.Row="0" Grid.Column="3" x:Name="CloudFontValue" x:Uid="CloudFontValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" Padding="4" MinWidth="128" MaxWidth="384" IsReadOnly="True" AlternationCount="2" IsManipulationEnabled="True" SelectionChanged="CloudFontValue_SelectionChanged"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" x:Name="CloudOrientationLabel" x:Uid="CloudOrientationLabel" Text="Orientation:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4" MinWidth="32" />
+            <ComboBox Grid.Row="1" Grid.Column="3" x:Name="CloudOrientationValue" x:Uid="CloudOrientationValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" Padding="4" MinWidth="128" MaxWidth="384" IsReadOnly="True" AlternationCount="2" IsManipulationEnabled="True" SelectionChanged="CloudOrientationValue_SelectionChanged"/>
         </Grid>
     </Grid>
 </Window>

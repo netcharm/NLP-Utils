@@ -28,4 +28,19 @@
     <PackageReference Include="Sdcb.WordCloud" Version="2.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\UI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UI.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\UI.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

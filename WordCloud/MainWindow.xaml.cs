@@ -1,5 +1,6 @@
 ﻿using Sdcb.WordClouds;
 using SkiaSharp;
+using System.Globalization;
 using System.IO;
 using System.Printing;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WordCloud;
 
@@ -23,12 +25,14 @@ public partial class MainWindow : Window
 {
     private byte[]? PngBytes { get; set; }
 
-    public int CloudWidth { get;set; } = 1024;
-    public int CloudHeight { get;set; } = 1024;
-    public TextOrientations CloudOrientation { get;set; } = TextOrientations.PreferHorizontal;
-    public string CloudFontFamily { get; set; } = "Consolas";
-
     #region Word Cloud Helper
+    public int CloudWidth { get; set; } = 1024;
+    public int CloudHeight { get; set; } = 1024;
+    public string CloudFontFamily { get; set; } = "Consolas";
+    public TextOrientations CloudOrientation { get; set; } = TextOrientations.PreferHorizontal;
+
+    private DispatcherTimer? _DelayMakeTimer_;
+
     static IEnumerable<WordScore> MakeDemoScore()
     {
         string text = """
@@ -278,18 +282,82 @@ public partial class MainWindow : Window
     {
         try
         {
-            Sdcb.WordClouds.WordCloud wc = Sdcb.WordClouds.WordCloud.Create(new WordCloudOptions(Math.Max(128, CloudWidth), Math.Max(128, CloudHeight), MakeScore(WordsTextBox.Text))
+            Task.Run(() =>
             {
-                TextOrientation = CloudOrientation,
-                FontManager = new FontManager([SKTypeface.FromFamilyName(CloudFontFamily)])
-            });
-            PngBytes = wc.ToSKBitmap().Encode(SKEncodedImageFormat.Png, 100).AsSpan().ToArray();
-            WordCloudImage.Source = BitmapFrame.Create(new MemoryStream(PngBytes), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                Dispatcher.Invoke(() =>
+                {
+                    Cursor = Cursors.Wait;
+                    //BuildWordsCloudState.Visibility = Visibility.Visible;
+                    Sdcb.WordClouds.WordCloud wc = Sdcb.WordClouds.WordCloud.Create(new WordCloudOptions(Math.Max(128, CloudWidth), Math.Max(128, CloudHeight), MakeScore(WordsTextBox.Text))
+                    {
+                        TextOrientation = CloudOrientation,
+                        FontManager = new FontManager([SKTypeface.FromFamilyName(CloudFontFamily)])
+                    });
+                    PngBytes = wc.ToSKBitmap().Encode(SKEncodedImageFormat.Png, 100).AsSpan().ToArray();
+                    WordCloudImage.Source = BitmapFrame.Create(new MemoryStream(PngBytes), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                    //BuildWordsCloudState.Visibility = Visibility.Collapsed;
+                    Cursor = Cursors.Arrow;
+                });
+            }).ContinueWith(t =>
+            {
+                if (t.Exception is not null)
+                {
+                    MessageBox.Show(t.Exception.Message);
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message);
         }
+        finally
+        {
+            Dispatcher.Invoke(() => Cursor = Cursors.Arrow);
+        }
+    }
+
+    private void DelayMakeWordsCloud()
+    {
+        //if (!_DelayMakeTimer_?.IsEnabled ?? false) return;
+
+        if (_DelayMakeTimer_ is null)
+        {
+            _DelayMakeTimer_ ??= new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(2000), IsEnabled = false };
+            _DelayMakeTimer_.Tick += (s, e) =>
+            {
+                try
+                {
+                    CloudWidth = int.Parse(CloudWidthValue.Text);
+                    CloudHeight = int.Parse(CloudHeightValue.Text);
+                    CloudFontFamily = (string)CloudFontValue.SelectedValue;
+                    CloudOrientation = Enum.Parse<TextOrientations>((string)CloudFontValue.SelectedValue);
+                }
+                catch { }
+
+                //_DelayMakeTimer_.IsEnabled = false;
+                _DelayMakeTimer_.Stop();
+                MakeWordsCloud();
+            };
+        }
+        if (_DelayMakeTimer_ is not null && WordCloudImage.Source is not null)
+        {
+            _DelayMakeTimer_.IsEnabled = true;
+            _DelayMakeTimer_.Stop();
+            _DelayMakeTimer_.Start();
+        }
+        else
+        {
+            //MakeWordsCloud();
+        }
+    }
+    #endregion
+
+    #region Locale UI
+    private void LocaleUI(CultureInfo? culture = null)
+    {
+        culture ??= CultureInfo.CurrentUICulture;
+        Title = $"Title".T(culture) ?? Title;
+        this.Locale(culture);
     }
     #endregion
 
@@ -337,7 +405,7 @@ public partial class MainWindow : Window
         CloudFontValue.Text = CloudFontFamily;
         CloudFontValue.SelectedIndex = CloudFontValue.Items.IndexOf(CloudFontFamily);
 
-        CloudOrientationValue.ItemsSource = Enum.GetValues(typeof(TextOrientations)).Cast<TextOrientations>();
+        CloudOrientationValue.ItemsSource = Enum.GetValues<TextOrientations>().Cast<TextOrientations>();
         CloudOrientationValue.Text = CloudOrientationValue.Items.OfType<TextOrientations>().FirstOrDefault(o => o == CloudOrientation).ToString();
         CloudOrientationValue.SelectedIndex = CloudOrientationValue.Items.IndexOf(CloudOrientation);
 
@@ -347,9 +415,12 @@ public partial class MainWindow : Window
         CloudOrientationValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudOrientation)) { Source = this, Mode = BindingMode.TwoWay });
         #endregion
 
+        LocaleUI();
+
         WordsTextBox.Focusable = true;
         WordsTextBox.Focus();
 
+        _DelayMakeTimer_?.Stop();
         //MakeWordsCloud();
     }
 
@@ -377,5 +448,25 @@ public partial class MainWindow : Window
                 File.WriteAllBytes(dlg.FileName, PngBytes);
             }
         }
+    }
+
+    private void CloudWidthValue_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        DelayMakeWordsCloud();
+    }
+
+    private void CloudHeightValue_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        DelayMakeWordsCloud();
+    }
+
+    private void CloudFontValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        DelayMakeWordsCloud();
+    }
+
+    private void CloudOrientationValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        DelayMakeWordsCloud();
     }
 }

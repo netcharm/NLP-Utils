@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="zh-Hans" original="WORDCLOUD/RESOURCES/UI.RESX">
+    <body>
+      <group id="WORDCLOUD/RESOURCES/UI.RESX" datatype="resx">
+        <trans-unit id="BuildWordsCloud.Content" translate="yes" xml:space="preserve">
+          <source>Build</source>
+          <target state="new">创建词云图片</target>
+        </trans-unit>
+        <trans-unit id="CloudFontLabel.Text" translate="yes" xml:space="preserve">
+          <source>Font:</source>
+          <target state="new">字体:</target>
+        </trans-unit>
+        <trans-unit id="CloudHeightLabel.Text" translate="yes" xml:space="preserve">
+          <source>H:</source>
+          <target state="new">高度:</target>
+        </trans-unit>
+        <trans-unit id="CloudOrientationLabel.Text" translate="yes" xml:space="preserve">
+          <source>Orientation:</source>
+          <target state="new">朝向:</target>
+        </trans-unit>
+        <trans-unit id="CloudWidthLabel.Text" translate="yes" xml:space="preserve">
+          <source>W:</source>
+          <target state="new">宽度:</target>
+        </trans-unit>
+        <trans-unit id="SaveWordsCloud.Content" translate="yes" xml:space="preserve">
+          <source>Save</source>
+          <target state="new">保存词云图片</target>
+        </trans-unit>
+        <trans-unit id="Title" translate="yes" xml:space="preserve">
+          <source>Word Cloud Generator</source>
+          <target state="new">词云生成器</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
