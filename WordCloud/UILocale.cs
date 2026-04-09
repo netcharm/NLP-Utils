@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Xceed.Wpf.Toolkit;
 
 namespace WordCloud
 {
@@ -158,6 +159,15 @@ namespace WordCloud
                             {
                                 var text = $"{ui.Uid}.RecentColorsHeader".T();
                                 if (!string.IsNullOrEmpty(text)) ui.RecentColorsHeader = text;
+                            }
+                        }
+                        else if (element is Xceed.Wpf.Toolkit.BusyIndicator)
+                        {
+                            var ui = element as BusyIndicator;
+                            if (ui.BusyContent is string && !string.IsNullOrEmpty(ui.BusyContent as string))
+                            {
+                                var text = $"{ui.Uid}.BusyContent".T();
+                                if (!string.IsNullOrEmpty(text)) ui.BusyContent = text;
                             }
                         }
                     }
