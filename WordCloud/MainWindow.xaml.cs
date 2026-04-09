@@ -370,7 +370,7 @@ public partial class MainWindow : Window
                     var wc_img = wc.ToSKBitmap();
                     if (CloudBG != CloudBGStyle.None)
                     {
-                        using var bg = new SKBitmap(CloudWidth, CloudHeight, SKColorType.Rgba8888, SKAlphaType.Opaque);
+                        using var bg = new SKBitmap(CloudWidth, CloudHeight, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb());
                         using var bgc = new SKCanvas(bg);
                         if (CloudBG == CloudBGStyle.White) { bgc?.Clear(SKColors.White); }
                         else if (CloudBG == CloudBGStyle.Black) { bgc?.Clear(SKColors.Black); }
