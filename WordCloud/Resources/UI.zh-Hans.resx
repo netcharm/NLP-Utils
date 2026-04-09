@@ -138,4 +138,40 @@
   <data name="CloudOrientationLabel.Text" xml:space="preserve">
     <value>朝向:</value>
   </data>
+  <data name="CloudBackgroundLabel.Text" xml:space="preserve">
+    <value>背景:</value>
+  </data>
+  <data name="CloudMaskImageLabel.Text" xml:space="preserve">
+    <value>遮罩:</value>
+  </data>
+  <data name="CloudBackColorPick.AdvancedTabHeader" xml:space="preserve">
+    <value>自定</value>
+  </data>
+  <data name="CloudBackColorPick.StandardTabHeader" xml:space="preserve">
+    <value>标准</value>
+  </data>
+  <data name="CloudBackColorPick.AvailableColorsHeader" xml:space="preserve">
+    <value>有效颜色</value>
+  </data>
+  <data name="CloudBackColorPick.StandardColorsHeader" xml:space="preserve">
+    <value>标准颜色</value>
+  </data>
+  <data name="CloudBackColorPick.RecentColorsHeader" xml:space="preserve">
+    <value>最近颜色</value>
+  </data>
+  <data name="CloudBackColorPick.ToolTip" xml:space="preserve">
+    <value>选择词云背景色</value>
+  </data>
+  <data name="CloudBuildingIndicator.BusyContent" xml:space="preserve">
+    <value>词云创建中 ...</value>
+  </data>
+  <data name="CloudMarginLabel.Text" xml:space="preserve">
+    <value>边距:</value>
+  </data>
+  <data name="CloudMaskImagePick.ToolTip" xml:space="preserve">
+    <value>选择遮罩图片</value>
+  </data>
+  <data name="CloudBackImagePick.ToolTip" xml:space="preserve">
+    <value>选择背景图片</value>
+  </data>
 </root>

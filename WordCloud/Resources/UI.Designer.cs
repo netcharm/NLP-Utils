@@ -70,6 +70,87 @@ namespace WordCloud.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Advanced 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackColorPick_AdvancedTabHeader {
+            get {
+                return ResourceManager.GetString("CloudBackColorPick.AdvancedTabHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Available Colors 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackColorPick_AvailableColorsHeader {
+            get {
+                return ResourceManager.GetString("CloudBackColorPick.AvailableColorsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Recent Colors 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackColorPick_RecentColorsHeader {
+            get {
+                return ResourceManager.GetString("CloudBackColorPick.RecentColorsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Standard Colors 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackColorPick_StandardColorsHeader {
+            get {
+                return ResourceManager.GetString("CloudBackColorPick.StandardColorsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Standard 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackColorPick_StandardTabHeader {
+            get {
+                return ResourceManager.GetString("CloudBackColorPick.StandardTabHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Word Cloud Background Color 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackColorPick_ToolTip {
+            get {
+                return ResourceManager.GetString("CloudBackColorPick.ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Background: 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackgroundLabel_Text {
+            get {
+                return ResourceManager.GetString("CloudBackgroundLabel.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Pick Background Image 的本地化字符串。
+        /// </summary>
+        internal static string CloudBackImagePick_ToolTip {
+            get {
+                return ResourceManager.GetString("CloudBackImagePick.ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Building ... 的本地化字符串。
+        /// </summary>
+        internal static string CloudBuildingIndicator_BusyContent {
+            get {
+                return ResourceManager.GetString("CloudBuildingIndicator.BusyContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Font: 的本地化字符串。
         /// </summary>
         internal static string CloudFontLabel_Text {
@@ -84,6 +165,33 @@ namespace WordCloud.Resources {
         internal static string CloudHeightLabel_Text {
             get {
                 return ResourceManager.GetString("CloudHeightLabel.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Margin: 的本地化字符串。
+        /// </summary>
+        internal static string CloudMarginLabel_Text {
+            get {
+                return ResourceManager.GetString("CloudMarginLabel.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mask Image: 的本地化字符串。
+        /// </summary>
+        internal static string CloudMaskImageLabel_Text {
+            get {
+                return ResourceManager.GetString("CloudMaskImageLabel.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Pick Mask Image 的本地化字符串。
+        /// </summary>
+        internal static string CloudMaskImagePick_ToolTip {
+            get {
+                return ResourceManager.GetString("CloudMaskImagePick.ToolTip", resourceCulture);
             }
         }
         

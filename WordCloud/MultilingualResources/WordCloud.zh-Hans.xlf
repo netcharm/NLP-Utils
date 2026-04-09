@@ -7,6 +7,42 @@
           <source>Build</source>
           <target state="new">创建词云图片</target>
         </trans-unit>
+        <trans-unit id="CloudBackColorPick.AdvancedTabHeader" translate="yes" xml:space="preserve">
+          <source>Advanced</source>
+          <target state="new">自定</target>
+        </trans-unit>
+        <trans-unit id="CloudBackColorPick.AvailableColorsHeader" translate="yes" xml:space="preserve">
+          <source>Available Colors</source>
+          <target state="new">有效颜色</target>
+        </trans-unit>
+        <trans-unit id="CloudBackColorPick.RecentColorsHeader" translate="yes" xml:space="preserve">
+          <source>Recent Colors</source>
+          <target state="new">最近颜色</target>
+        </trans-unit>
+        <trans-unit id="CloudBackColorPick.StandardColorsHeader" translate="yes" xml:space="preserve">
+          <source>Standard Colors</source>
+          <target state="new">标准颜色</target>
+        </trans-unit>
+        <trans-unit id="CloudBackColorPick.StandardTabHeader" translate="yes" xml:space="preserve">
+          <source>Standard</source>
+          <target state="new">标准</target>
+        </trans-unit>
+        <trans-unit id="CloudBackColorPick.ToolTip" translate="yes" xml:space="preserve">
+          <source>Word Cloud Background Color</source>
+          <target state="new">选择词云背景色</target>
+        </trans-unit>
+        <trans-unit id="CloudBackImagePick.ToolTip" translate="yes" xml:space="preserve">
+          <source>Pick Background Image</source>
+          <target state="new">选择背景图片</target>
+        </trans-unit>
+        <trans-unit id="CloudBackgroundLabel.Text" translate="yes" xml:space="preserve">
+          <source>Background:</source>
+          <target state="new">背景:</target>
+        </trans-unit>
+        <trans-unit id="CloudBuildingIndicator.BusyContent" translate="yes" xml:space="preserve">
+          <source>Building ...</source>
+          <target state="new">词云创建中 ...</target>
+        </trans-unit>
         <trans-unit id="CloudFontLabel.Text" translate="yes" xml:space="preserve">
           <source>Font:</source>
           <target state="new">字体:</target>
@@ -14,6 +50,18 @@
         <trans-unit id="CloudHeightLabel.Text" translate="yes" xml:space="preserve">
           <source>H:</source>
           <target state="new">高度:</target>
+        </trans-unit>
+        <trans-unit id="CloudMarginLabel.Text" translate="yes" xml:space="preserve">
+          <source>Margin:</source>
+          <target state="new">边距:</target>
+        </trans-unit>
+        <trans-unit id="CloudMaskImageLabel.Text" translate="yes" xml:space="preserve">
+          <source>Mask Image:</source>
+          <target state="new">遮罩:</target>
+        </trans-unit>
+        <trans-unit id="CloudMaskImagePick.ToolTip" translate="yes" xml:space="preserve">
+          <source>Pick Mask Image</source>
+          <target state="new">选择遮罩图片</target>
         </trans-unit>
         <trans-unit id="CloudOrientationLabel.Text" translate="yes" xml:space="preserve">
           <source>Orientation:</source>

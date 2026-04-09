@@ -118,4 +118,40 @@
   <data name="CloudOrientationLabel.Text" xml:space="preserve">
     <value>Orientation:</value>
   </data>
+  <data name="CloudBackgroundLabel.Text" xml:space="preserve">
+    <value>Background:</value>
+  </data>
+  <data name="CloudMaskImageLabel.Text" xml:space="preserve">
+    <value>Mask Image:</value>
+  </data>
+  <data name="CloudBackColorPick.AdvancedTabHeader" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="CloudBackColorPick.StandardTabHeader" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="CloudBackColorPick.AvailableColorsHeader" xml:space="preserve">
+    <value>Available Colors</value>
+  </data>
+  <data name="CloudBackColorPick.RecentColorsHeader" xml:space="preserve">
+    <value>Recent Colors</value>
+  </data>
+  <data name="CloudBackColorPick.StandardColorsHeader" xml:space="preserve">
+    <value>Standard Colors</value>
+  </data>
+  <data name="CloudBackColorPick.ToolTip" xml:space="preserve">
+    <value>Word Cloud Background Color</value>
+  </data>
+  <data name="CloudBuildingIndicator.BusyContent" xml:space="preserve">
+    <value>Building ...</value>
+  </data>
+  <data name="CloudMarginLabel.Text" xml:space="preserve">
+    <value>Margin:</value>
+  </data>
+  <data name="CloudBackImagePick.ToolTip" xml:space="preserve">
+    <value>Pick Background Image</value>
+  </data>
+  <data name="CloudMaskImagePick.ToolTip" xml:space="preserve">
+    <value>Pick Mask Image</value>
+  </data>
 </root>

@@ -131,35 +131,35 @@ namespace WordCloud
                             var ui = element as ItemsControl;
                             foreach (var i in ui.Items) if (i is FrameworkElement) ((FrameworkElement)i).Locale();
                         }
-                        //else if (element is ColorPicker)
-                        //{
-                        //    var ui = element as ColorPicker;
-                        //    if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
-                        //    {
-                        //        var text = $"{ui.Uid}.AdvancedTabHeader".T();
-                        //        if (!string.IsNullOrEmpty(text)) ui.AdvancedTabHeader = text;
-                        //    }
-                        //    if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
-                        //    {
-                        //        var text = $"{ui.Uid}.StandardTabHeader".T();
-                        //        if (!string.IsNullOrEmpty(text)) ui.StandardTabHeader = text;
-                        //    }
-                        //    if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
-                        //    {
-                        //        var text = $"{ui.Uid}.AvailableColorsHeader".T();
-                        //        if (!string.IsNullOrEmpty(text)) ui.AvailableColorsHeader = text;
-                        //    }
-                        //    if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
-                        //    {
-                        //        var text = $"{ui.Uid}.StandardColorsHeader".T();
-                        //        if (!string.IsNullOrEmpty(text)) ui.StandardColorsHeader = text;
-                        //    }
-                        //    if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
-                        //    {
-                        //        var text = $"{ui.Uid}.RecentColorsHeader".T();
-                        //        if (!string.IsNullOrEmpty(text)) ui.RecentColorsHeader = text;
-                        //    }
-                        //}
+                        else if (element is Xceed.Wpf.Toolkit.ColorPicker)
+                        {
+                            var ui = element as Xceed.Wpf.Toolkit.ColorPicker;
+                            if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
+                            {
+                                var text = $"{ui.Uid}.AdvancedTabHeader".T();
+                                if (!string.IsNullOrEmpty(text)) ui.AdvancedTabHeader = text;
+                            }
+                            if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
+                            {
+                                var text = $"{ui.Uid}.StandardTabHeader".T();
+                                if (!string.IsNullOrEmpty(text)) ui.StandardTabHeader = text;
+                            }
+                            if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
+                            {
+                                var text = $"{ui.Uid}.AvailableColorsHeader".T();
+                                if (!string.IsNullOrEmpty(text)) ui.AvailableColorsHeader = text;
+                            }
+                            if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
+                            {
+                                var text = $"{ui.Uid}.StandardColorsHeader".T();
+                                if (!string.IsNullOrEmpty(text)) ui.StandardColorsHeader = text;
+                            }
+                            if (!string.IsNullOrEmpty(ui.AdvancedTabHeader))
+                            {
+                                var text = $"{ui.Uid}.RecentColorsHeader".T();
+                                if (!string.IsNullOrEmpty(text)) ui.RecentColorsHeader = text;
+                            }
+                        }
                     }
                 }
 

@@ -1,8 +1,11 @@
-﻿using Sdcb.WordClouds;
+﻿using Microsoft.Win32;
+using Sdcb.WordClouds;
 using SkiaSharp;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Printing;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -23,13 +26,75 @@ namespace WordCloud;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private byte[]? PngBytes { get; set; }
+    #region DoEvent Helper
+    private static object? ExitFrame(object state)
+    {
+        ((DispatcherFrame)state).Continue = false;
+        return null;
+    }
+
+    private static readonly SemaphoreSlim CanDoEvents = new(1, 1);
+    public static async void DoEvents()
+    {
+        if (await CanDoEvents.WaitAsync(0))
+        {
+            try
+            {
+                if (Application.Current?.Dispatcher?.CheckAccess() ?? false)
+                {
+                    await Dispatcher.Yield(DispatcherPriority.Normal);
+                }
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    if (Application.Current?.Dispatcher?.CheckAccess() ?? false)
+                    {
+                        DispatcherFrame frame = new();
+                        await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new DispatcherOperationCallback(ExitFrame), frame);
+                        Dispatcher.PushFrame(frame);
+                    }
+                }
+                catch (Exception)
+                {
+                    //await Task.Delay(1);
+                }
+            }
+            finally
+            {
+                //CanDoEvents.Release(max: 1);
+                if (CanDoEvents?.CurrentCount <= 0) CanDoEvents?.Release();
+            }
+        }
+    }
+    #endregion
 
     #region Word Cloud Helper
+    private byte[]? PngBytes { get; set; }
+
+    public enum CloudBGStyle { None, White, Black, Color, Image };
+    public enum CloudFGStyle { Color, Grayscale, BlackWhite };
+    public enum CloudMaskStyle { None, Image };
+
+    public int CloudMargin { get; set; } = 0;
     public int CloudWidth { get; set; } = 1024;
     public int CloudHeight { get; set; } = 1024;
     public string CloudFontFamily { get; set; } = "Consolas";
     public TextOrientations CloudOrientation { get; set; } = TextOrientations.PreferHorizontal;
+
+    public CloudBGStyle CloudBG { get; set; } = CloudBGStyle.None;
+    private SKColor? CloudBackgroundColor = null;
+    private SKImage? CloudBackgroundImage = null;
+
+    private bool IsCloudBuilding
+    {
+        get => CloudBuildingIndicator?.Dispatcher?.Invoke(() => { return (CloudBuildingIndicator.IsBusy); }) ?? false;
+        set => CloudBuildingIndicator?.Dispatcher?.Invoke(() => { CloudBuildingIndicator.IsBusy = value; DoEvents(); });
+    }
+
+    public CloudMaskStyle CloudMask { get; set; } = CloudMaskStyle.None;
+    private SKImage? CloudMaskImage = null;
 
     private DispatcherTimer? _DelayMakeTimer_;
 
@@ -282,27 +347,60 @@ public partial class MainWindow : Window
     {
         try
         {
+            IsCloudBuilding = true;
             Task.Run(() =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    Cursor = Cursors.Wait;
-                    //BuildWordsCloudState.Visibility = Visibility.Visible;
+                    MaskOptions? mask = null;
+                    if (CloudMask == CloudMaskStyle.Image && CloudMaskImage is not null)
+                    {
+                        CloudWidth = CloudMaskImage.Width;
+                        CloudHeight = CloudMaskImage.Height;
+                        mask = MaskOptions.CreateWithBackgroundColor(SKBitmap.FromImage(CloudMaskImage), SKColors.White);
+                        //mask = MaskOptions.CreateWithForegroundColor(SKBitmap.FromImage(CloudMaskImage), SKColors.Black);
+                    }
+
                     Sdcb.WordClouds.WordCloud wc = Sdcb.WordClouds.WordCloud.Create(new WordCloudOptions(Math.Max(128, CloudWidth), Math.Max(128, CloudHeight), MakeScore(WordsTextBox.Text))
                     {
+                        Mask = mask,
                         TextOrientation = CloudOrientation,
                         FontManager = new FontManager([SKTypeface.FromFamilyName(CloudFontFamily)])
                     });
-                    PngBytes = wc.ToSKBitmap().Encode(SKEncodedImageFormat.Png, 100).AsSpan().ToArray();
+                    var wc_img = wc.ToSKBitmap();
+                    if (CloudBG != CloudBGStyle.None)
+                    {
+                        using var bg = new SKBitmap(CloudWidth, CloudHeight, SKColorType.Rgba8888, SKAlphaType.Opaque);
+                        using var bgc = new SKCanvas(bg);
+                        if (CloudBG == CloudBGStyle.White) { bgc?.Clear(SKColors.White); }
+                        else if (CloudBG == CloudBGStyle.Black) { bgc?.Clear(SKColors.Black); }
+                        else if (CloudBG == CloudBGStyle.Color) { bgc?.Clear(CloudBackgroundColor ?? SKColors.Transparent); }
+                        else if (CloudBG == CloudBGStyle.Image) { if (CloudBackgroundImage is not null) bgc?.DrawImage(CloudBackgroundImage, 0, 0); }
+                        bgc?.DrawImage(SKImage.FromBitmap(wc_img), 0, 0);
+                        bg.CopyTo(wc_img);
+                    }
+                    if (CloudMargin > 0)
+                    {
+                        using var margin_img = new SKBitmap(CloudWidth + CloudMargin * 2, CloudHeight + CloudMargin * 2, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb());
+                        using var margin_c = new SKCanvas(margin_img);
+                        if (CloudBG == CloudBGStyle.None) { margin_c?.Clear(SKColors.Transparent); }
+                        else if (CloudBG == CloudBGStyle.White) { margin_c?.Clear(SKColors.White); }
+                        else if (CloudBG == CloudBGStyle.Black) { margin_c?.Clear(SKColors.Black); }
+                        else if (CloudBG == CloudBGStyle.Color) { margin_c?.Clear(CloudBackgroundColor ?? SKColors.Transparent); }
+                        else if (CloudBG == CloudBGStyle.Image) { if (CloudBackgroundImage is not null) margin_c?.DrawImage(CloudBackgroundImage, 0, 0); }
+                        margin_c?.DrawImage(SKImage.FromBitmap(wc_img), CloudMargin, CloudMargin);
+                        margin_img?.CopyTo(wc_img);
+                    }
+                    PngBytes = wc_img.Encode(SKEncodedImageFormat.Png, 100).AsSpan().ToArray();
                     WordCloudImage.Source = BitmapFrame.Create(new MemoryStream(PngBytes), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                    //BuildWordsCloudState.Visibility = Visibility.Collapsed;
-                    Cursor = Cursors.Arrow;
+                    IsCloudBuilding = false;
                 });
             }).ContinueWith(t =>
             {
                 if (t.Exception is not null)
                 {
                     MessageBox.Show(t.Exception.Message);
+                    Cursor = Cursors.Arrow;
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -312,7 +410,7 @@ public partial class MainWindow : Window
         }
         finally
         {
-            Dispatcher.Invoke(() => Cursor = Cursors.Arrow);
+            //IsCloudBuilding = false;
         }
     }
 
@@ -327,6 +425,7 @@ public partial class MainWindow : Window
             {
                 try
                 {
+                    CloudMargin = int.Parse(CloudMarginValue.Text);
                     CloudWidth = int.Parse(CloudWidthValue.Text);
                     CloudHeight = int.Parse(CloudHeightValue.Text);
                     CloudFontFamily = (string)CloudFontValue.SelectedValue;
@@ -409,10 +508,22 @@ public partial class MainWindow : Window
         CloudOrientationValue.Text = CloudOrientationValue.Items.OfType<TextOrientations>().FirstOrDefault(o => o == CloudOrientation).ToString();
         CloudOrientationValue.SelectedIndex = CloudOrientationValue.Items.IndexOf(CloudOrientation);
 
+        CloudBackgroundValue.ItemsSource = Enum.GetValues<CloudBGStyle>().Cast<CloudBGStyle>();
+        CloudBackgroundValue.Text = CloudBackgroundValue.Items.OfType<CloudBGStyle>().FirstOrDefault(o => o == CloudBG).ToString();
+        CloudBackgroundValue.SelectedIndex = CloudOrientationValue.Items.IndexOf(CloudBG);
+
+        CloudMaskImageValue.ItemsSource = Enum.GetValues<CloudMaskStyle>().Cast<CloudMaskStyle>();
+        CloudMaskImageValue.Text = CloudMaskImageValue.Items.OfType<CloudMaskStyle>().FirstOrDefault(o => o == CloudMask).ToString();
+        CloudMaskImageValue.SelectedIndex = CloudMaskImageValue.Items.IndexOf(CloudMask);
+
+        CloudMarginValue.SetBinding(TextBox.TextProperty, new Binding(nameof(CloudMargin)) { Source = this, Mode = BindingMode.TwoWay });
+
         CloudWidthValue.SetBinding(TextBox.TextProperty, new Binding(nameof(CloudWidth)) { Source = this, Mode = BindingMode.TwoWay });
         CloudHeightValue.SetBinding(TextBox.TextProperty, new Binding(nameof(CloudHeight)) { Source = this, Mode = BindingMode.TwoWay });
         CloudFontValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudFontFamily)) { Source = this, Mode = BindingMode.TwoWay });
         CloudOrientationValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudOrientation)) { Source = this, Mode = BindingMode.TwoWay });
+        CloudBackgroundValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudBG)) { Source = this, Mode = BindingMode.TwoWay });
+        CloudMaskImageValue.SetBinding(ComboBox.TextProperty, new Binding(nameof(CloudMask)) { Source = this, Mode = BindingMode.TwoWay });
         #endregion
 
         LocaleUI();
@@ -426,11 +537,13 @@ public partial class MainWindow : Window
 
     private void BuildWordsCloud_Click(object sender, RoutedEventArgs e)
     {
+        _DelayMakeTimer_?.Stop();
         MakeWordsCloud();
     }
 
     private void SaveWordsCloud_Click(object sender, RoutedEventArgs e)
     {
+        _DelayMakeTimer_?.Stop();
         if (PngBytes is not null)
         {
             var dlg = new Microsoft.Win32.SaveFileDialog()
@@ -452,21 +565,118 @@ public partial class MainWindow : Window
 
     private void CloudWidthValue_TextChanged(object sender, TextChangedEventArgs e)
     {
+        _DelayMakeTimer_?.Stop();
         DelayMakeWordsCloud();
     }
 
     private void CloudHeightValue_TextChanged(object sender, TextChangedEventArgs e)
     {
+        _DelayMakeTimer_?.Stop();
         DelayMakeWordsCloud();
     }
 
     private void CloudFontValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        _DelayMakeTimer_?.Stop();
         DelayMakeWordsCloud();
     }
 
     private void CloudOrientationValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        _DelayMakeTimer_?.Stop();
+        DelayMakeWordsCloud();
+    }
+
+    private void CloudBackgroundValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        _DelayMakeTimer_?.Stop();
+        if (e.AddedItems.Count > 0 && e.AddedItems[0] is not null)
+        {
+            var new_bg = e.AddedItems.Cast<CloudBGStyle>().FirstOrDefault();
+            if (new_bg == CloudBGStyle.Image && CloudBackgroundImage is null)
+            {
+                var dlg = new Microsoft.Win32.OpenFileDialog()
+                {
+                    AddToRecent = false,
+                    AddExtension = true,
+                    CheckFileExists = true,
+                    Filter = "PNG Image|*.png",
+                    DefaultExt = "png",
+                };
+                if (dlg.ShowDialog() == true)
+                {
+                    CloudBackgroundImage = SKImage.FromEncodedData(dlg.FileName);
+                }
+            }
+        }
+        DelayMakeWordsCloud();
+    }
+
+    private void CloudBackColorPick_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+    {
+        var c = CloudBackColorPick.SelectedColor;
+        CloudBackgroundColor = new SKColor(c?.R ?? 0, c?.G ?? 0, c?.B ?? 0, c?.A ?? 255);
+    }
+
+    private void CloudBackImagePick_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new Microsoft.Win32.OpenFileDialog()
+        {
+            AddToRecent = false,
+            AddExtension = true,
+            CheckFileExists = true,
+            Filter = "PNG Image|*.png",
+            DefaultExt = "png",
+        };
+        if (dlg.ShowDialog() == true)
+        {
+            CloudBackgroundImage = SKImage.FromEncodedData(dlg.FileName);
+            CloudWidth = CloudBackgroundImage?.Width ?? CloudWidth;
+            CloudHeight = CloudBackgroundImage?.Height ?? CloudHeight;
+        }
+    }
+
+    private void CloudMaskImageValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        _DelayMakeTimer_?.Stop();
+        if (e.AddedItems.Count > 0 && e.AddedItems[0] is not null)
+        {
+            var new_mask = e.AddedItems.Cast<CloudMaskStyle>().FirstOrDefault();
+            if (new_mask == CloudMaskStyle.Image && CloudBackgroundImage is null) { CloudMaskImagePick_Click(sender, e); }
+        }
+        DelayMakeWordsCloud();
+    }
+
+    private void CloudMaskImagePick_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new Microsoft.Win32.OpenFileDialog()
+        {
+            AddToRecent = false,
+            AddExtension = true,
+            CheckFileExists = true,
+            Filter = "PNG Image|*.png",
+            DefaultExt = "png",
+        };
+        if (dlg.ShowDialog() == true)
+        {
+            CloudMaskImage = SKImage.FromEncodedData(dlg.FileName);
+            var filter_c = SKColorFilter.CreateTable(
+                [.. Enumerable.Range(0, 256).Select(i => (byte)(i > 0 ? 255 : 255))],
+                [.. Enumerable.Range(0, 256).Select(i => (byte)(i > 0 ? 255 : 0))],
+                [.. Enumerable.Range(0, 256).Select(i => (byte)(i > 0 ? 255 : 0))],
+                [.. Enumerable.Range(0, 256).Select(i => (byte)(i > 0 ? 255 : 0))]
+            );
+            var rect = new SKRectI(0, 0, CloudMaskImage?.Width ?? CloudWidth, CloudMaskImage?.Height ?? CloudHeight);
+            var filter = SKImageFilter.CreateColorFilter(filter_c);
+            CloudMaskImage = CloudMaskImage?.ApplyImageFilter(filter, rect, rect, out SKRectI rect_o, out SKPoint pt_o);
+            CloudWidth = CloudMaskImage?.Width ?? CloudWidth;
+            CloudHeight = CloudMaskImage?.Height ?? CloudHeight;
+        }
+    }
+
+    private void CloudMarginValue_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        _DelayMakeTimer_?.Stop();
         DelayMakeWordsCloud();
     }
 }
