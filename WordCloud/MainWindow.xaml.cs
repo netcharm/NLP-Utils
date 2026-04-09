@@ -352,6 +352,24 @@ public partial class MainWindow : Window
             {
                 Dispatcher.Invoke(() =>
                 {
+                    try
+                    {
+                        CloudMargin = int.Parse(CloudMarginValue.Text);
+                        CloudWidth = int.Parse(CloudWidthValue.Text);
+                        CloudHeight = int.Parse(CloudHeightValue.Text);
+                        CloudFontFamily = (string)CloudFontValue.SelectedValue;
+                        CloudOrientation = Enum.Parse<TextOrientations>((string)CloudFontValue.SelectedValue);                        
+                        CloudBG = Enum.Parse<CloudBGStyle>((string)CloudBackgroundValue.SelectedValue);
+                        CloudMask = Enum.Parse<CloudMaskStyle>((string)CloudMaskImageValue.SelectedValue);
+                    }
+                    catch { }
+
+                    if (CloudBG == CloudBGStyle.Image && CloudBackgroundImage is not null)
+                    {
+                        CloudWidth = CloudBackgroundImage.Width;
+                        CloudHeight = CloudBackgroundImage.Height;
+                    }
+
                     MaskOptions? mask = null;
                     if (CloudMask == CloudMaskStyle.Image && CloudMaskImage is not null)
                     {
@@ -368,7 +386,7 @@ public partial class MainWindow : Window
                         FontManager = new FontManager([SKTypeface.FromFamilyName(CloudFontFamily)])
                     });
                     var wc_img = wc.ToSKBitmap();
-                    if (CloudBG != CloudBGStyle.None)
+                    if (CloudBG != CloudBGStyle.None && CloudMargin == 0)
                     {
                         using var bg = new SKBitmap(CloudWidth, CloudHeight, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb());
                         using var bgc = new SKCanvas(bg);
@@ -381,13 +399,15 @@ public partial class MainWindow : Window
                     }
                     if (CloudMargin > 0)
                     {
-                        using var margin_img = new SKBitmap(CloudWidth + CloudMargin * 2, CloudHeight + CloudMargin * 2, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb());
+                        var margin_w = CloudWidth + CloudMargin * 2;
+                        var margin_h = CloudHeight + CloudMargin * 2;
+                        using var margin_img = new SKBitmap(margin_w, margin_h, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb());
                         using var margin_c = new SKCanvas(margin_img);
                         if (CloudBG == CloudBGStyle.None) { margin_c?.Clear(SKColors.Transparent); }
                         else if (CloudBG == CloudBGStyle.White) { margin_c?.Clear(SKColors.White); }
                         else if (CloudBG == CloudBGStyle.Black) { margin_c?.Clear(SKColors.Black); }
                         else if (CloudBG == CloudBGStyle.Color) { margin_c?.Clear(CloudBackgroundColor ?? SKColors.Transparent); }
-                        else if (CloudBG == CloudBGStyle.Image) { if (CloudBackgroundImage is not null) margin_c?.DrawImage(CloudBackgroundImage, 0, 0); }
+                        else if (CloudBG == CloudBGStyle.Image) { if (CloudBackgroundImage is not null) margin_c?.DrawImage(CloudBackgroundImage, new SKRect(0, 0, CloudWidth, CloudHeight), new SKRect(0, 0, margin_w, margin_h)); }
                         margin_c?.DrawImage(SKImage.FromBitmap(wc_img), CloudMargin, CloudMargin);
                         margin_img?.CopyTo(wc_img);
                     }
@@ -423,16 +443,6 @@ public partial class MainWindow : Window
             _DelayMakeTimer_ ??= new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(2000), IsEnabled = false };
             _DelayMakeTimer_.Tick += (s, e) =>
             {
-                try
-                {
-                    CloudMargin = int.Parse(CloudMarginValue.Text);
-                    CloudWidth = int.Parse(CloudWidthValue.Text);
-                    CloudHeight = int.Parse(CloudHeightValue.Text);
-                    CloudFontFamily = (string)CloudFontValue.SelectedValue;
-                    CloudOrientation = Enum.Parse<TextOrientations>((string)CloudFontValue.SelectedValue);
-                }
-                catch { }
-
                 //_DelayMakeTimer_.IsEnabled = false;
                 _DelayMakeTimer_.Stop();
                 MakeWordsCloud();
