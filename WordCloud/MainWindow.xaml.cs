@@ -114,6 +114,9 @@ public partial class MainWindow : Window
         set => CloudMaskImageValue.Dispatcher.Invoke(() => { CloudMaskImageValue.Text = value.ToString(); });
     }
 
+    private HashSet<string> _stopwords_ = [];
+    private readonly string _stopwords_file_ = "stopwords.txt";
+
     public string CloudWords
     {
         get => WordsTextBox.Dispatcher.Invoke(() => WordsTextBox.Text);
@@ -166,7 +169,7 @@ public partial class MainWindow : Window
         return (image?.ApplyImageFilter(filter, rect, rect, out SKRectI rect_o, out SKPoint pt_o));
     }
 
-    private SKImage? PickImage()
+    private static SKImage? PickImage()
     {
         SKImage? result = null; 
         var dlg = new Microsoft.Win32.OpenFileDialog()
@@ -207,7 +210,15 @@ public partial class MainWindow : Window
 
     private DispatcherTimer? _DelayMakeTimer_;
 
-    static IEnumerable<WordScore> MakeDemoScore()
+    private void LoadStopWords()
+    {
+        if (File.Exists(_stopwords_file_))
+        {
+            _stopwords_ = [.. File.ReadAllLines(_stopwords_file_).Select(l => l.Trim()).Where(l => !string.IsNullOrEmpty(l))];
+        }
+    }   
+
+    private IEnumerable<WordScore> MakeDemoScore()
     {
         string text = """
         459    cloud
@@ -434,7 +445,7 @@ public partial class MainWindow : Window
 #pragma warning restore IDE0079 // 请删除不必要的忽略
     }
 
-    private static IEnumerable<WordScore> MakeScore(string? text = null)
+    private IEnumerable<WordScore> MakeScore(string? text = null)
     {
         if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(text.Trim()))
         {
@@ -447,7 +458,7 @@ public partial class MainWindow : Window
                     .Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                     .Select(x => x.Trim().Split("\t")).Where(x => x.Length >= 2)
                     .Select(x => new WordScore(Score: int.Parse(x[0]), Word: x[1]))
-                    .Where(x => !string.IsNullOrEmpty(x.Word.Trim()));
+                    .Where(x => !string.IsNullOrEmpty(x.Word.Trim()) && !_stopwords_.Contains(x.Word.Trim()));
             return (scores);
         }
     }
@@ -640,6 +651,8 @@ public partial class MainWindow : Window
         #endregion
 
         LocaleUI();
+
+        LoadStopWords();
 
         WordsTextBox.Focusable = true;
         WordsTextBox.Focus();
