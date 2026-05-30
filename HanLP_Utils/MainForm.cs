@@ -156,6 +156,11 @@ namespace HanLP_Utils
             chkTermNature.Checked = HanLP.Config.ShowTermNature;
             #endregion
 
+            #region Initialize dictionaries
+            CoreStopWordDictionary _stop_dict_ = new CoreStopWordDictionary();
+            CustomDictionary _custom_dict_ = new CustomDictionary();
+            #endregion
+
             #region Load custom dictionary list
             var custom_dicts_file = Path.Combine(ROOT, "custom_dicts.txt");
             if (File.Exists(custom_dicts_file))
@@ -549,19 +554,20 @@ namespace HanLP_Utils
 
                         if (dragFileName.EndsWith(".url", StringComparison.CurrentCultureIgnoreCase))
                         {
-                            var content = File.ReadAllLines( dragFileName );
-                            foreach (var line in content)
-                            {
-
-                            }
+                            edSrc.Clear();
+                            edSrc.AppendText(File.ReadAllText(dragFileName));
                         }
                         else if (text.Contains(ext))
                         {
-                            edSrc.Text = File.ReadAllText(dragFileName);
+                            edSrc.Clear();
+                            edSrc.AppendText(File.ReadAllText(dragFileName));
+                            //edSrc.Text = File.ReadAllText(dragFileName);
                         }
                         else if (html.Contains(ext))
                         {
-                            edSrc.Text = ReadUrl(dragFileName);
+                            edSrc.Clear();
+                            edSrc.AppendText(ReadUrl(dragFileName));
+                            //edSrc.Text = ReadUrl(dragFileName);
                         }
                     }
                 }
@@ -570,13 +576,7 @@ namespace HanLP_Utils
 
                 }
             }
-            //else if ( e.Data.GetDataPresent( DataFormats.Html ) )
-            //{
-            //    var content = e.Data.GetData( DataFormats.Html, true ).ToString();
-            //    edSrc.Text = string.Join("\n", GetLinks( content ));
-            //}
-            else if (e.Data.GetDataPresent(DataFormats.Text) ||
-                      e.Data.GetDataPresent(DataFormats.UnicodeText))
+            else if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText))
             {
                 var content = e.Data.GetData( "System.String", true ).ToString();
                 if (content.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase) ||
@@ -584,11 +584,15 @@ namespace HanLP_Utils
                      content.StartsWith("ftp://", StringComparison.CurrentCultureIgnoreCase) ||
                      content.StartsWith("file://", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    edSrc.Text = ReadUrl(content);
+                    edSrc.Clear();
+                    edSrc.AppendText(ReadUrl(content));
+                    //edSrc.Text = ReadUrl(content);
                 }
                 else
                 {
-                    edSrc.Text = content;
+                    edSrc.Clear();
+                    edSrc.AppendText(content);
+                    //edSrc.Text = content;
                 }
             }
             return;
@@ -629,7 +633,9 @@ namespace HanLP_Utils
                 {
                     txt = filterHtmlTag(txt);
                 }
-                edSrc.Text = filterMisc(txt);
+                edSrc.Clear();
+                edSrc.AppendText(filterMisc(txt));
+                //edSrc.Text = filterMisc(txt);
             }
             catch { }
 
@@ -733,7 +739,9 @@ namespace HanLP_Utils
                 else
                     sb.AppendLine(string.Join(", ", text).Trim());
             }
-            edDst.Text = string.Join("\n", sb);
+            edDst.Clear();
+            edDst.AppendText(string.Join(Environment.NewLine, sb));
+            //edDst.Text = string.Join("\n", sb);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
@@ -756,7 +764,9 @@ namespace HanLP_Utils
                 if (text.Length <= 0) continue;
                 sb.AppendLine(string.Join(", ", text).Trim());
             }
-            edDst.Text = string.Join("\n", sb);
+            edDst.Clear();
+            edDst.AppendText(string.Join(Environment.NewLine, sb));
+            //edDst.Text = string.Join("\n", sb);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
@@ -766,9 +776,11 @@ namespace HanLP_Utils
         {
             var sw = Stopwatch.StartNew();
 
-            var text = HanLP.extractKeyword( edSrc.Text, 25 ).toArray();
+            var text = HanLP.extractKeyword(edSrc.Text, 25).toArray();
             if (text.Length <= 0) return;
-            edDst.Text = string.Join(", ", text);
+            edDst.Clear();
+            edDst.AppendText(string.Join(", ", text));
+            //edDst.Text = string.Join(", ", text);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
@@ -778,10 +790,12 @@ namespace HanLP_Utils
         {
             var sw = Stopwatch.StartNew();
 
-            var text = HanLP.extractSummary( edSrc.Text, 15 ).toArray();
+            var text = HanLP.extractSummary(edSrc.Text, 15).toArray();
             if (text.Length <= 0) return;
             var ro = RegexOptions.IgnoreCase | RegexOptions.Multiline;
-            edDst.Text = Regex.Replace(string.Join(", ", text), @"[　| ]{2,}", " ", ro);
+            edDst.Clear();
+            edDst.AppendText(Regex.Replace(string.Join(", ", text), @"[　| ]{2,}", " ", ro));
+            //edDst.Text = Regex.Replace(string.Join(", ", text), @"[　| ]{2,}", " ", ro);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
@@ -798,7 +812,9 @@ namespace HanLP_Utils
                 if (text.Length <= 0) continue;
                 sb.AppendLine(string.Join(", ", text).Trim());
             }
-            edDst.Text = string.Join("\n", sb);
+            edDst.Clear();
+            edDst.AppendText(string.Join(Environment.NewLine, sb));
+            //edDst.Text = string.Join("\n", sb);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
@@ -834,21 +850,15 @@ namespace HanLP_Utils
 
                 var width_k = sortedword.Max(w => HalfWidthLength(w.Key)) + 1;
                 var width_v = sortedword.Max(w => w.Value).ToString().Length + 1;
-                var sb = sortedword.Select(w => {
+                var sb = sortedword.Select(w =>
+                {
                     var k = w.Key.PadRight(width_k - FullWidthCount(w.Key), ' ');
                     var v = w.Value.ToString().PadLeft(width_v, ' ');
                     return($"{k}{v}".Replace("/", " "));
                 }).ToList();
-                edDst.Text = string.Join(Environment.NewLine, sb);
-
-                //StringBuilder sb = new StringBuilder();
-                //foreach (var w in sortedword)
-                //{
-                //    var k = w.Key.PadRight(width_k - FullWidthCount(w.Key), ' ');
-                //    var v = w.Value.ToString().PadLeft(width_v, ' ');
-                //    sb.AppendLine($"{k}{v}".Replace("/", " "));
-                //}
-                //edDst.Text = string.Join("\n", sb);
+                edDst.Clear();
+                edDst.AppendText(string.Join(Environment.NewLine, sb));
+                //edDst.Text = string.Join(Environment.NewLine, sb);
             }
             catch (Exception ex)
             {
@@ -868,7 +878,9 @@ namespace HanLP_Utils
             {
                 sb.AppendLine(HanLP.convertToTraditionalChinese(line).ToString());
             }
-            edDst.Text = string.Join("\n", sb);
+            edDst.Clear();
+            edDst.AppendText(string.Join(Environment.NewLine, sb));
+            //edDst.Text = string.Join("\n", sb);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
@@ -883,7 +895,9 @@ namespace HanLP_Utils
             {
                 sb.AppendLine(HanLP.convertToSimplifiedChinese(line).ToString());
             }
-            edDst.Text = string.Join("\n", sb);
+            edDst.Clear();
+            edDst.AppendText(string.Join(Environment.NewLine, sb));
+            //edDst.Text = string.Join("\n", sb);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
@@ -918,7 +932,9 @@ namespace HanLP_Utils
                 //if( cmiPyShowPunctuation.Checked )
                 sb.AppendLine(string.Join(conn, text).Trim());
             }
-            edDst.Text = string.Join("\n", sb);
+            edDst.Clear();
+            edDst.AppendText(string.Join(Environment.NewLine, sb));
+            //edDst.Text = string.Join("\n", sb);
 
             sw.Stop();
             lblInfo.Text = $"{sw.Elapsed}s";
