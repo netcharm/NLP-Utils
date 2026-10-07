@@ -154,4 +154,13 @@
   <data name="CloudMaskImagePick.ToolTip" xml:space="preserve">
     <value>Pick Mask Image</value>
   </data>
+  <data name="LoadTextContent.Content" xml:space="preserve">
+    <value>Load Text</value>
+  </data>
+  <data name="LoadWordsFreqs.Content" xml:space="preserve">
+    <value>Load Words</value>
+  </data>
+  <data name="WordsLoadingIndicator.BusyContent" xml:space="preserve">
+    <value>Loading ...</value>
+  </data>
 </root>

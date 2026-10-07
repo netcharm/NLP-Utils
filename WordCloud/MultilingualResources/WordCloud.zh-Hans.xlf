@@ -71,6 +71,14 @@
           <source>W:</source>
           <target state="new">宽度:</target>
         </trans-unit>
+        <trans-unit id="LoadTextContent.Content" translate="yes" xml:space="preserve">
+          <source>Load Text</source>
+          <target state="new">载入文本文件</target>
+        </trans-unit>
+        <trans-unit id="LoadWordsFreqs.Content" translate="yes" xml:space="preserve">
+          <source>Load Words</source>
+          <target state="new">载入词频文件</target>
+        </trans-unit>
         <trans-unit id="SaveWordsCloud.Content" translate="yes" xml:space="preserve">
           <source>Save</source>
           <target state="new">保存词云图片</target>
@@ -78,6 +86,10 @@
         <trans-unit id="Title" translate="yes" xml:space="preserve">
           <source>Word Cloud Generator</source>
           <target state="new">词云生成器</target>
+        </trans-unit>
+        <trans-unit id="WordsLoadingIndicator.BusyContent" translate="yes" xml:space="preserve">
+          <source>Loading ...</source>
+          <target state="new">词频数据载入中</target>
         </trans-unit>
       </group>
     </body>

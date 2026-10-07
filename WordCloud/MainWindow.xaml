@@ -10,12 +10,12 @@
         Title="Word Cloud Generator" Height="720" Width="1280" Loaded="Window_Loaded">
     <Grid Margin="4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="256"/>
+            <ColumnDefinition Width="Auto" MinWidth="256" />
             <ColumnDefinition Width="0.618*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto" MaxHeight="72"/>
+            <RowDefinition Height="Auto" MaxHeight="80"/>
         </Grid.RowDefinitions>
         <TextBox Grid.Column="0" Grid.Row="0" Name="WordsTextBox" TextWrapping="Wrap" AcceptsReturn="True" 
                  Margin="4" MaxWidth="400"
@@ -31,9 +31,14 @@
         <xctk:BusyIndicator Grid.Column="1" Grid.Row="0" x:Name="CloudBuildingIndicator" x:Uid="CloudBuildingIndicator" MinWidth="128" MinHeight="96" Margin="4" 
             VerticalAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
             BusyContent="Building ..." Background="Transparent" IsBusy="False" ForceCursor="True" IsManipulationEnabled="True" />
-        <WrapPanel Grid.Column="0" Grid.Row="1" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center" >
-            <Button Name="SaveWordsCloud" x:Uid="SaveWordsCloud" Content="Save" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="64" Margin="8" Padding="4" Click="SaveWordsCloud_Click" />
-            <Button Name="BuildWordsCloud" x:Uid="BuildWordsCloud" Content="Build" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="64" Margin="8" Padding="4" Click="BuildWordsCloud_Click" />
+        <xctk:BusyIndicator Grid.Column="0" Grid.Row="0" x:Name="WordsLoadingIndicator" x:Uid="WordsLoadingIndicator" MinWidth="128" MinHeight="96" Margin="4" 
+            VerticalAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+            BusyContent="Loading ..." Background="Transparent" IsBusy="False" ForceCursor="True" IsManipulationEnabled="True" />
+        <WrapPanel Grid.Column="0" Grid.Row="1" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="{Binding ActualWidth, ElementName=WordsTextBox}" >
+            <Button Name="SaveWordsCloud" x:Uid="SaveWordsCloud" Content="Save" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="92" Margin="8,4,8,4" Padding="4" Click="SaveWordsCloud_Click" />
+            <Button Name="BuildWordsCloud" x:Uid="BuildWordsCloud" Content="Build" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="92" Margin="8,4,8,4" Padding="4" Click="BuildWordsCloud_Click" />
+            <Button Name="LoadWordsFreqs" x:Uid="LoadWordsFreqs" Content="Load Words" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="92" Margin="8,4,8,4" Padding="4" Click="LoadWordsFreqs_Click" />
+            <Button Name="LoadTextContent" x:Uid="LoadTextContent" Content="Load Text" VerticalAlignment="Center" HorizontalAlignment="Left" Height="32" MinWidth="92" Margin="8,4,8,4" Padding="4" Click="LoadTextContent_Click" />
         </WrapPanel>
         <Grid Grid.Column="1" Grid.Row="1" Margin="4" VerticalAlignment="Center"  HorizontalAlignment="Center" >
             <Grid.ColumnDefinitions>

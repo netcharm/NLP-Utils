@@ -214,6 +214,24 @@ namespace WordCloud.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Load Text 的本地化字符串。
+        /// </summary>
+        internal static string LoadTextContent_Content {
+            get {
+                return ResourceManager.GetString("LoadTextContent.Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Load Words 的本地化字符串。
+        /// </summary>
+        internal static string LoadWordsFreqs_Content {
+            get {
+                return ResourceManager.GetString("LoadWordsFreqs.Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Save 的本地化字符串。
         /// </summary>
         internal static string SaveWordsCloud_Content {
@@ -228,6 +246,15 @@ namespace WordCloud.Resources {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Loading ... 的本地化字符串。
+        /// </summary>
+        internal static string WordsLoadingIndicator_BusyContent {
+            get {
+                return ResourceManager.GetString("WordsLoadingIndicator.BusyContent", resourceCulture);
             }
         }
     }

@@ -174,4 +174,13 @@
   <data name="CloudBackImagePick.ToolTip" xml:space="preserve">
     <value>选择背景图片</value>
   </data>
+  <data name="LoadTextContent.Content" xml:space="preserve">
+    <value>载入文本文件</value>
+  </data>
+  <data name="LoadWordsFreqs.Content" xml:space="preserve">
+    <value>载入词频文件</value>
+  </data>
+  <data name="WordsLoadingIndicator.BusyContent" xml:space="preserve">
+    <value>词频数据载入中</value>
+  </data>
 </root>

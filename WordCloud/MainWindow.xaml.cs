@@ -1,7 +1,5 @@
-﻿using Microsoft.Win32;
-using Sdcb.WordClouds;
-using SkiaSharp;
-using System;
+﻿using System;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Printing;
@@ -20,6 +18,11 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace WordCloud;
+
+using Microsoft.Win32;
+using Sdcb.WordClouds;
+using SkiaSharp;
+using System.Windows.Media;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -67,6 +70,231 @@ public partial class MainWindow : Window
                 if (CanDoEvents?.CurrentCount <= 0) CanDoEvents?.Release();
             }
         }
+    }
+    #endregion
+
+    #region text helper
+    private Encoding? GBK;
+    private Encoding? UTF8;
+
+    private void ShowMessage(string message, string caption = "Message", MessageBoxImage icon = MessageBoxImage.Information)
+    {
+        Dispatcher.Invoke(() => MessageBox.Show(this, message, caption, MessageBoxButton.OK, icon));
+    }
+
+    private void ShowMessage(string? message)
+    {
+        Dispatcher.Invoke(() => MessageBox.Show(this, message));
+    }
+
+    private string ReadStream(Stream stream, Encoding? encoding, int len = -1)
+    {
+        var result = string.Empty;
+
+        if (stream is null || !stream.CanSeek || !stream.CanRead || stream.Length <= 0) { return result; }
+
+        encoding ??= Encoding.Default;
+
+        stream.Seek(0, SeekOrigin.Begin);
+        if (len > 0)
+        {
+            var buffer = new byte[len];
+            _ = stream.Read(buffer, 0, len);
+            result = encoding.GetString(buffer);
+        }
+        else
+        {
+            using StreamReader sr = new(stream, encoding, true);
+            result = sr.ReadToEnd();
+        }
+        return result;
+    }
+
+    private bool IsUTF8(Stream stream, int len = -1)
+    {
+        var utf8Str = ReadStream(stream, UTF8, len: len);
+        var gbkStr = ReadStream(stream, GBK, len: len);
+        return utf8Str.Length <= 0 || gbkStr.Length <= 0 || utf8Str.Length <= gbkStr.Length;
+    }
+
+    private Encoding IsGBKOrUTF8(Stream stream, int len = -1)
+    {
+        var utf8Str = ReadStream(stream, UTF8, len: len);
+        var gbkStr = ReadStream(stream, GBK, len: len);
+        return ((utf8Str.Length <= gbkStr.Length ? UTF8 : GBK) ?? Encoding.Default);
+    }
+
+    private Encoding DetectEncoding(Stream stream)
+    {
+        var result = Encoding.Default;
+
+        if (IsUTF8(stream, len: 4096))
+        {
+            result = UTF8;
+        }
+        else if (IsGBKOrUTF8(stream, len: 4096) == GBK)
+        {
+            result = GBK;
+        }
+
+        return (result ?? Encoding.Default);
+    }
+
+    private void LoadTextFiles(string[] files)
+    {
+        if (files is not null && files.Length > 0)
+        {
+            IsWordsLoading = true;
+            try
+            {
+                StringBuilder sb = new();
+                foreach (var file in files)
+                {
+                    if (!string.IsNullOrEmpty(file) && File.Exists(file))
+                    {
+                        using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        if (fs.Length > 0)
+                        {
+                            var enc = DetectEncoding(fs);
+                            fs.Seek(0, SeekOrigin.Begin);
+                            using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
+                            var text = sr.ReadToEnd();
+                            if (!string.IsNullOrEmpty(text))
+                            {
+                                sb.AppendLine(text);
+                            }
+                        }
+                    }
+                }
+                SegmentText(sb.ToString());
+            }
+            catch (Exception ex) { ShowMessage(ex.StackTrace); }
+            //finally { IsWordsLoading = false; }
+        }
+    }
+
+    private void LoadWordsFile(string file)
+    {
+        if (!string.IsNullOrEmpty(file) && File.Exists(file))
+        {
+            IsWordsLoading = true;
+            try
+            {
+                using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                if (fs.Length > 0)
+                {
+                    var enc = DetectEncoding(fs);
+                    fs.Seek(0, SeekOrigin.Begin);
+                    using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
+                    var text = sr.ReadToEnd();
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        SegmentText(text);
+                    }
+                }
+            }
+            catch (Exception ex) { ShowMessage(ex.StackTrace); }
+            //finally { IsWordsLoading = false; }
+        }
+    }
+    #endregion
+
+    #region Word Segmenter Helper
+    //private string DefaultUserDictFile => "userdict.txt";
+    //private string DefaultStopWordFile => "stopwords.txt";
+    //private string DefaultUserDictFile => ConfigurationManager.AppSettings["userdict_file_path"];
+    //private string DefaultStopWordFile => ConfigurationManager.AppSettings["stopwords_file_path"];
+
+    private WordSegmenter.ChineseSegmenter _segmentor_ = new();
+
+    private async void InitWordSegmenter()
+    {
+        await Task.Run(() =>
+        {
+            _segmentor_ ??= new();
+            //_segmentor_?.LoadUserDictWord(DefaultUserDictFile);
+            //_segmentor_?.LoadUserDictWord(DefaultStopWordFile);
+        });
+    }
+
+    private async void SegmentText(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return;
+        await Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Yield();
+                var words = SegmentWords(text);
+                if (words.Any())
+                {
+                    await Task.Yield();
+                    var wordCounts = CountWords(words);
+                    await Task.Yield();
+                    var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{kv.Key}, {kv.Value}");
+                    await Task.Yield();
+                    if (wordCounts.Any()) await WordsTextBox.Dispatcher.InvokeAsync(async () => { await Task.Yield(); WordsTextBox.Text = string.Join(Environment.NewLine, result); });
+                    await Task.Yield();
+                }
+                // Do something with the word counts, e.g., display or save to a file
+            }
+            catch(Exception ex) { ShowMessage(ex.StackTrace); }
+            finally { IsWordsLoading = false; }
+        });
+    }
+
+    private async void SegmentTextFile(string file)
+    {
+        if (!File.Exists(file)) return;
+        await Task.Run(() =>
+        {
+            using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            if (fs.Length > 0)
+            {
+                var enc = DetectEncoding(fs);
+                fs.Seek(0, SeekOrigin.Begin);
+                using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
+                var text = sr.ReadToEnd();
+                if (!string.IsNullOrEmpty(text))
+                {
+                    SegmentText(text);
+                }
+            }
+            // Do something with the word counts, e.g., display or save to a file
+        });
+    }
+
+    private IEnumerable<string> SegmentWords(string text)
+    {
+        if (_segmentor_ is null) InitWordSegmenter();
+        return (_segmentor_?.Cut(text).Split('/') ?? []);
+    }
+
+    private Dictionary<string, int> CountWords(IEnumerable<string> words)
+    {
+        var result = new Dictionary<string, int>();
+        result = words.GroupBy(w => w).Where(g => g.Key.Length > 1).ToDictionary(g => g.Key, g => g.Count());
+        //foreach (var word in words)
+        //{
+        //    if (string.IsNullOrEmpty(word)) continue;
+        //    if (result.TryGetValue(word, out int value))
+        //    {
+        //        result[word] = ++value;
+        //    }
+        //    else
+        //    {
+        //        result[word] = 1;
+        //    }
+        //}
+        if (_stopwords_?.Any() ?? false)
+        {
+            char[] trim = [ ' ', ',', '.', '\n', '\r', '：', '！', '，' ];
+            foreach (var word in result)
+            {
+                if (_stopwords_.Contains(word.Key) || string.IsNullOrEmpty(word.Key.Trim())) result.Remove(word.Key);
+            }
+        }
+        return (result);
     }
     #endregion
 
@@ -132,7 +360,13 @@ public partial class MainWindow : Window
     private bool IsCloudBuilding
     {
         get => CloudBuildingIndicator?.Dispatcher?.Invoke(() => { return (CloudBuildingIndicator.IsBusy); }) ?? false;
-        set => CloudBuildingIndicator?.Dispatcher?.Invoke(() => { CloudBuildingIndicator.IsBusy = value; DoEvents(); });
+        set => CloudBuildingIndicator?.Dispatcher?.Invoke(async () => { CloudBuildingIndicator.IsBusy = value; await Task.Yield(); DoEvents(); });
+    }
+
+    private bool IsWordsLoading
+    {
+        get => WordsLoadingIndicator?.Dispatcher?.Invoke(() => { return (WordsLoadingIndicator.IsBusy); }) ?? false;
+        set => WordsLoadingIndicator?.Dispatcher?.Invoke(async () => { WordsLoadingIndicator.IsBusy = value; await Task.Yield(); DoEvents(); });
     }
 
     private SKColor? CloudBackgroundColor = null;
@@ -553,15 +787,8 @@ public partial class MainWindow : Window
                 WordCloudResult = BitmapFrame.Create(new MemoryStream(PngBytes), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
                 DoEvents();
             }
-            catch (Exception ex)
-            {
-                Dispatcher.Invoke(() => MessageBox.Show(this, ex.StackTrace));
-            }
-            finally
-            {
-                IsCloudBuilding = false;
-            }
-
+            catch (Exception ex) { ShowMessage(ex.StackTrace); }
+            finally { IsCloudBuilding = false; }
         }, _CancelBuilding_.Token);
     }
     
@@ -602,7 +829,11 @@ public partial class MainWindow : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        #region allow drag and drop text
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        GBK = Encoding.GetEncoding("GB18030");
+        UTF8 = Encoding.UTF8;
+
+        #region allow drag and drop text to words textbox
         WordsTextBox.AllowDrop = true;
         WordsTextBox.DragOver += (s, e) =>
         {
@@ -634,6 +865,53 @@ public partial class MainWindow : Window
         };
         #endregion
 
+        #region allow drag and drop text or files to window
+        AllowDrop = true;
+        DragOver += (s, e) =>
+        {
+            if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText) || e.Data.GetDataPresent(DataFormats.OemText) || e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+            e.Handled = true;
+        };
+        Drop += (s, e) =>
+        {
+            if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText) || e.Data.GetDataPresent(DataFormats.OemText))
+            {
+                try
+                {
+                    var text = (e.Data.GetData(DataFormats.Text) ?? e.Data.GetData(DataFormats.UnicodeText) ?? e.Data.GetData(DataFormats.OemText) ?? string.Empty) as string;
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        e.Handled = true;
+
+                        SegmentText(text);
+                        //WordsTextBox.Text = text;
+                    }
+                }
+                catch { }
+            }
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                try
+                {
+                    var files = (e.Data.GetData(DataFormats.FileDrop) ?? Array.Empty<string>()) as string[];
+                    if (files is not null && files.Length > 0)
+                    {
+                        e.Handled = true;
+                        LoadTextFiles(files);
+                    }
+                }
+                catch { }
+            }
+        };
+        #endregion
+
         #region init cloud options to UI
         CloudFontValue.ItemsSource = Fonts.SystemFontFamilies;
         CloudOrientationValue.ItemsSource = Enum.GetValues<TextOrientations>().Cast<TextOrientations>();
@@ -654,11 +932,19 @@ public partial class MainWindow : Window
 
         LoadStopWords();
 
+        InitWordSegmenter();
+
         WordsTextBox.Focusable = true;
         WordsTextBox.Focus();
 
         _DelayMakeTimer_?.Stop();
         //MakeWordsCloud();
+
+        var cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        //cfg.AppSettings.File = "wordcloud.config";
+        //cfg.Sections.Add("user", new ConfigurationSection());
+        ////cfg.AppSettings.ad["userdict_file_path"] = DefaultUserDictFile;
+        //cfg.Save(ConfigurationSaveMode.Modified);
     }
 
     private void BuildWordsCloud_Click(object sender, RoutedEventArgs e)
@@ -755,5 +1041,39 @@ public partial class MainWindow : Window
         if (!IsLoaded) return;
         _DelayMakeTimer_?.Stop();
         DelayMakeWordsCloud();
+    }
+
+    private void LoadTextContent_Click(object sender, RoutedEventArgs e)
+    {
+        OpenFileDialog dlg = new()
+        {
+            AddToRecent = false,
+            AddExtension = true,
+            CheckFileExists = true,
+            Filter = "Text Files|*.txt;*.text|All Files|*.*",
+            Multiselect = true,
+            DefaultExt = "txt",
+        };
+        if (dlg.ShowDialog() == true && dlg.FileNames is not null && dlg.FileNames.Length > 0)
+        {
+            LoadTextFiles(dlg.FileNames);
+        }
+    }
+
+    private void LoadWordsFreqs_Click(object sender, RoutedEventArgs e)
+    {
+        OpenFileDialog dlg = new()
+        {
+            AddToRecent = false,
+            AddExtension = true,
+            CheckFileExists = true,
+            Filter = "Text Files|*.txt;*.text|All Files|*.*",
+            Multiselect = false,
+            DefaultExt = "txt",
+        };
+        if (dlg.ShowDialog() == true && dlg.FileNames is not null && dlg.FileNames.Length > 0)
+        {
+            LoadWordsFile(dlg.FileName);
+        }
     }
 }
