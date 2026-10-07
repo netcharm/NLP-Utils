@@ -222,6 +222,10 @@ public partial class MainWindow : Window
     #endregion
 
     #region Word Segmenter Helper
+    //
+    // Simple Jieba for csharp : https://github.com/partychen/jieba_csharp
+    //
+
     private string DefaultUserDictFile => "userdict.txt";
     //private string DefaultStopWordFile => "stopwords.txt";
     //private string DefaultUserDictFile => ConfigurationManager.AppSettings["userdict_file_path"];
