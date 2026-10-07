@@ -141,6 +141,27 @@ public partial class MainWindow : Window
         return (result ?? Encoding.Default);
     }
 
+    private int LengthCJK(string text)
+    {
+        return(GBK?.GetByteCount(text) ?? UTF8?.GetByteCount(text) ?? text?.Length ?? 0);
+    }
+
+    private string PadLeftCJK(string text, int totalWidth, char paddingChar = ' ')
+    {
+        var result = text;
+        //result = result.PadLeft(totalWidth - ((LengthCJK(result) - result.Length) / 2), paddingChar);
+        result = result.PadLeft(totalWidth - (LengthCJK(result) - result.Length), paddingChar);
+        return (result);
+    }
+
+    private string PadRightCJK(string text, int totalWidth, char paddingChar = ' ')
+    {
+        var result = text;
+        //result = result.PadRight(totalWidth - ((LengthCJK(result) - result.Length) / 2), paddingChar);
+        result = result.PadRight(totalWidth - (LengthCJK(result) - result.Length), paddingChar);
+        return (result);
+    }
+
     private void LoadTextFiles(string[] files)
     {
         if (files is not null && files.Length > 0)
@@ -201,7 +222,7 @@ public partial class MainWindow : Window
     #endregion
 
     #region Word Segmenter Helper
-    //private string DefaultUserDictFile => "userdict.txt";
+    private string DefaultUserDictFile => "userdict.txt";
     //private string DefaultStopWordFile => "stopwords.txt";
     //private string DefaultUserDictFile => ConfigurationManager.AppSettings["userdict_file_path"];
     //private string DefaultStopWordFile => ConfigurationManager.AppSettings["stopwords_file_path"];
@@ -215,7 +236,57 @@ public partial class MainWindow : Window
             _segmentor_ ??= new();
             //_segmentor_?.LoadUserDictWord(DefaultUserDictFile);
             //_segmentor_?.LoadUserDictWord(DefaultStopWordFile);
+            LoadUserDictFile(DefaultUserDictFile);
         });
+    }
+
+    private void LoadUserDictFile(string file)
+    {
+        if (!string.IsNullOrEmpty(file) && File.Exists(file))
+        {
+            try
+            {
+                using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                if (fs.Length > 0)
+                {
+                    var enc = DetectEncoding(fs);
+                    fs.Seek(0, SeekOrigin.Begin);
+                    using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
+                    while (!sr.EndOfStream)
+                    {
+                        var line = sr.ReadLine()?.Trim();
+                        if (!string.IsNullOrEmpty(line))
+                        {
+                            line = Regex.Replace(line, @"[\s\t,;]+", " ").Trim();
+                            var user_word = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                            if (user_word.Length >= 3)
+                            {
+                                var word = user_word[0].Trim();
+                                //var freq = int.TryParse(user_word[2], out int f) ? f : 0;
+                                //var tag = user_word[1];
+                                int freq = 0;
+                                var tag = string.Empty;
+                                if (int.TryParse(user_word[1], out freq))
+                                {
+                                    tag = user_word[2].Trim();
+                                }
+                                else if (int.TryParse(user_word[2], out freq))
+                                {
+                                    tag = user_word[1].Trim();
+                                }
+                                else continue;
+
+                                if (!string.IsNullOrEmpty(word) && freq > 0 && !string.IsNullOrEmpty(tag))
+                                {
+                                    _segmentor_?.AddWord(word, freq, tag);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { ShowMessage(ex.StackTrace); }
+        }
     }
 
     private async void SegmentText(string text)
@@ -232,7 +303,8 @@ public partial class MainWindow : Window
                     await Task.Yield();
                     var wordCounts = CountWords(words);
                     await Task.Yield();
-                    var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{kv.Key}\t\t{kv.Value}");
+                    //var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{kv.Key.PadRight(8, '　')} {kv.Value}");
+                    var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{PadRightCJK(kv.Key, 16)} {kv.Value}");
                     await Task.Yield();
                     if (wordCounts.Any()) await WordsTextBox.Dispatcher.InvokeAsync(async () => { await Task.Yield(); WordsTextBox.Text = string.Join(Environment.NewLine, result); });
                     await Task.Yield();
@@ -666,15 +738,15 @@ public partial class MainWindow : Window
         StringBuilder sb = new();
         foreach (var line in lines)
         {
-            if (Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t+\s]+(.+?)$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(\d+)$", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(.+?)$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(\d+)$", RegexOptions.IgnoreCase))
             {
                 //results.Add(Regex.Replace(line + "\n", @"(\d+)[\t+\s]+(.+?)$", "$1\t$2\n", RegexOptions.IgnoreCase).Trim());
-                sb.AppendLine(Regex.Replace(line, @"(\d+)[\t+\s]+(.+?)$", "$1\t$2\n", RegexOptions.IgnoreCase).Trim());
+                sb.AppendLine(Regex.Replace(line, @"(\d+)[\t\s]+(.+?)$", "$1\t$2\n", RegexOptions.IgnoreCase).Trim());
             }
-            else if (Regex.IsMatch(line, @"^[\s\t]*?(.+?)[\t+\s]+(\d{1,6})$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d+)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase))
+            else if (Regex.IsMatch(line, @"^[\s\t]*?(.+?)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d+)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase))
             {
                 //results.Add(Regex.Replace(line + "\n", @"(.+?)[\t+\s]+(\d+)$", "$2\t$1\n", RegexOptions.IgnoreCase).Trim());
-                sb.AppendLine(Regex.Replace(line, @"(.+?)[\t+\s]+(\d+)$", "$2\t$1\n", RegexOptions.IgnoreCase).Trim());
+                sb.AppendLine(Regex.Replace(line, @"(.+?)[\t\s]+(\d+)$", "$2\t$1\n", RegexOptions.IgnoreCase).Trim());
             }
         }
         //result = string.Join("\n", results),Trim();
