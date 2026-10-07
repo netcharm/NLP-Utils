@@ -66,6 +66,7 @@ public partial class MainWindow : Window
             }
             finally
             {
+                await Task.Yield();
                 //CanDoEvents.Release(max: 1);
                 if (CanDoEvents?.CurrentCount <= 0) CanDoEvents?.Release();
             }
@@ -231,7 +232,7 @@ public partial class MainWindow : Window
                     await Task.Yield();
                     var wordCounts = CountWords(words);
                     await Task.Yield();
-                    var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{kv.Key}, {kv.Value}");
+                    var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{kv.Key}\t\t{kv.Value}");
                     await Task.Yield();
                     if (wordCounts.Any()) await WordsTextBox.Dispatcher.InvokeAsync(async () => { await Task.Yield(); WordsTextBox.Text = string.Join(Environment.NewLine, result); });
                     await Task.Yield();
@@ -662,21 +663,23 @@ public partial class MainWindow : Window
 #pragma warning disable SYSLIB1045 // 转换为“GeneratedRegexAttribute”。
         var results = new List<string>();
         var lines = Regex.Split(words, @"(\n\r|\r\n|\n|\r)", RegexOptions.IgnoreCase).Where(l => !string.IsNullOrEmpty(l.Trim()));
+        StringBuilder sb = new();
         foreach (var line in lines)
         {
-            if (Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(.+?)$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(\d+)$", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t+\s]+(.+?)$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d{1,6})[\t\s]+(\d+)$", RegexOptions.IgnoreCase))
             {
-                results.Add(Regex.Replace(line + "\n", @"(\d+)[\t\s]+(.+?)$", "$1\t$2\n", RegexOptions.IgnoreCase).Trim());
+                //results.Add(Regex.Replace(line + "\n", @"(\d+)[\t+\s]+(.+?)$", "$1\t$2\n", RegexOptions.IgnoreCase).Trim());
+                sb.AppendLine(Regex.Replace(line, @"(\d+)[\t+\s]+(.+?)$", "$1\t$2\n", RegexOptions.IgnoreCase).Trim());
             }
-            else if (Regex.IsMatch(line, @"^[\s\t]*?(.+?)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d+)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase))
+            else if (Regex.IsMatch(line, @"^[\s\t]*?(.+?)[\t+\s]+(\d{1,6})$", RegexOptions.IgnoreCase) && !Regex.IsMatch(line, @"^[\s\t]*?(\d+)[\t\s]+(\d{1,6})$", RegexOptions.IgnoreCase))
             {
-                results.Add(Regex.Replace(line + "\n", @"(.+?)[\t\s]+(\d+)$", "$2\t$1\n", RegexOptions.IgnoreCase).Trim());
+                //results.Add(Regex.Replace(line + "\n", @"(.+?)[\t+\s]+(\d+)$", "$2\t$1\n", RegexOptions.IgnoreCase).Trim());
+                sb.AppendLine(Regex.Replace(line, @"(.+?)[\t+\s]+(\d+)$", "$2\t$1\n", RegexOptions.IgnoreCase).Trim());
             }
         }
-        result = string.Join("\n", results);
-#pragma warning restore SYSLIB1045 // 转换为“GeneratedRegexAttribute”。
-        return (result.Trim());
-#pragma warning restore IDE0079 // 请删除不必要的忽略
+        //result = string.Join("\n", results),Trim();
+        result = sb.ToString().Trim();
+        return (result);
     }
 
     private IEnumerable<WordScore> MakeScore(string? text = null)
@@ -690,9 +693,9 @@ public partial class MainWindow : Window
             var words = PreprocessText(text);
             var scores = words
                     .Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .Select(x => x.Trim().Split("\t")).Where(x => x.Length >= 2)
-                    .Select(x => new WordScore(Score: int.Parse(x[0]), Word: x[1]))
-                    .Where(x => !string.IsNullOrEmpty(x.Word.Trim()) && !_stopwords_.Contains(x.Word.Trim()));
+                    .Select(x => Regex.Replace(x.Trim(), @"\t+", "\t").Split("\t")).Where(x => x.Length >= 2)
+                    .Select(x => new WordScore(Score: int.Parse(x[0]), Word: x[1].Trim()))
+                    .Where(x => !string.IsNullOrEmpty(x.Word) && !_stopwords_.Contains(x.Word));
             return (scores);
         }
     }
