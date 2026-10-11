@@ -231,28 +231,34 @@ public partial class MainWindow : Window
     // Simple Jieba for csharp : https://github.com/partychen/jieba_csharp
     //
 
-    private string DefaultUserDictFile => "userdict.txt";
+    //private string DefaultUserDictFile => "userdict.txt";
     //private string DefaultStopWordFile => "stopwords.txt";
-    //private string DefaultUserDictFile => ConfigurationManager.AppSettings["userdict_file_path"];
-    //private string DefaultStopWordFile => ConfigurationManager.AppSettings["stopwords_file_path"];
-    private string[] ExtentionUserDicts = ConfigurationManager.AppSettings["ext_userdict_files"]?.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+    private string DefaultUserDictFile => ConfigurationManager.AppSettings["userdict_file_path"]?.Trim() ?? "userdict.txt";
+    private string DefaultStopWordFile => ConfigurationManager.AppSettings["stopwords_file_path"]?.Trim() ?? "stopwords.txt";
+    private string[] ExtentionUserDicts = ConfigurationManager.AppSettings["ext_userdict_files"]?.Split([',', ';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
 
     private WordSegmenter.ChineseSegmenter _segmentor_ = new();
 
+    //private string GetFilePath(string file) => (System.IO.Path.IsPathRooted(file.Trim() ?? false) ? text : System.IO.Path.Combine(AppPath, file)) ?? string.Empty;
+    private string GetFilePath(string file)
+    {
+        if (string.IsNullOrEmpty(file)) return (string.Empty);
+        return (System.IO.Path.IsPathRooted(file.Trim()) ? file.Trim() : System.IO.Path.Combine(AppPath, file.Trim()));
+    }
+    
     private async void InitWordSegmenter()
     {
         await Task.Run(() =>
         {
             _segmentor_ ??= new();
-            //_segmentor_?.LoadUserDictWord(DefaultUserDictFile);
-            //_segmentor_?.LoadUserDictWord(DefaultStopWordFile);
-            LoadUserDictFile(System.IO.Path.Combine(AppPath, DefaultUserDictFile));
+            // LoadUserDictFile(System.IO.Path.IsPathRooted(DefaultUserDictFile) ? DefaultUserDictFile : System.IO.Path.Combine(AppPath, DefaultUserDictFile));
+            LoadUserDictFile(GetFilePath(DefaultUserDictFile));
             if (ExtentionUserDicts?.Any() ?? false)
             {
-                foreach(var dict in ExtentionUserDicts)
+                foreach (var dict in ExtentionUserDicts.Select(f => f.Trim()).Where(f => !string.IsNullOrEmpty(f)))
                 {
-                    var file = System.IO.Path.IsPathRooted(dict) ? dict : System.IO.Path.Combine(AppPath, dict);
-                    LoadUserDictFile(file);
+                    // var file = System.IO.Path.IsPathRooted(dict) ? dict : System.IO.Path.Combine(AppPath, dict);
+                    LoadUserDictFile(GetFilePath(dict));
                 }
             }
         });
@@ -450,7 +456,6 @@ public partial class MainWindow : Window
     }
 
     private HashSet<string> _stopwords_ = [];
-    private string _stopwords_file_ = "stopwords.txt";
 
     public string CloudWords
     {
@@ -553,7 +558,8 @@ public partial class MainWindow : Window
 
     private void LoadStopWords()
     {
-        _stopwords_file_ = System.IO.Path.Combine(AppPath, _stopwords_file_);
+        // _stopwords_file_ = System.IO.Path.Combine(AppPath, DefaultStopWordFile);
+        var _stopwords_file_ = GetFilePath(DefaultStopWordFile);
         if (File.Exists(_stopwords_file_))
         {
             _stopwords_ = [.. File.ReadAllLines(_stopwords_file_).Select(l => l.Trim()).Where(l => !string.IsNullOrEmpty(l))];
