@@ -29,6 +29,8 @@ using System.Windows.Media;
 /// </summary>
 public partial class MainWindow : Window
 {
+    string AppPath = AppDomain.CurrentDomain.BaseDirectory;
+
     #region DoEvent Helper
     private static object? ExitFrame(object state)
     {
@@ -162,9 +164,11 @@ public partial class MainWindow : Window
         return (result);
     }
 
-    private void LoadTextFiles(string[] files)
+    private void LoadTextFiles(IEnumerable<FileInfo> files) => LoadTextFiles(files.Select(f => f.FullName));
+
+    private void LoadTextFiles(IEnumerable<string> files)
     {
-        if (files is not null && files.Length > 0)
+        if (files is not null && files.Any())
         {
             IsWordsLoading = true;
             try
@@ -240,7 +244,7 @@ public partial class MainWindow : Window
             _segmentor_ ??= new();
             //_segmentor_?.LoadUserDictWord(DefaultUserDictFile);
             //_segmentor_?.LoadUserDictWord(DefaultStopWordFile);
-            LoadUserDictFile(DefaultUserDictFile);
+            LoadUserDictFile(System.IO.Path.Combine(AppPath, DefaultUserDictFile));
         });
     }
 
@@ -304,19 +308,19 @@ public partial class MainWindow : Window
                 var words = SegmentWords(text);
                 if (words.Any())
                 {
-                    await Task.Yield();
+                    //await Task.Yield();
                     var wordCounts = CountWords(words);
                     await Task.Yield();
                     //var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{kv.Key.PadRight(8, '　')} {kv.Value}");
                     var result = wordCounts.OrderByDescending(kv => kv.Value).Take(500).Select(kv => $"{PadRightCJK(kv.Key, 16)} {kv.Value}");
                     await Task.Yield();
-                    if (wordCounts.Any()) await WordsTextBox.Dispatcher.InvokeAsync(async () => { await Task.Yield(); WordsTextBox.Text = string.Join(Environment.NewLine, result); });
+                    if (wordCounts.Any()) await WordsTextBox.Dispatcher.InvokeAsync(async () => { WordsTextBox.Text = string.Join(Environment.NewLine, result); await Task.Yield(); });
                     await Task.Yield();
                 }
                 // Do something with the word counts, e.g., display or save to a file
             }
             catch(Exception ex) { ShowMessage(ex.StackTrace); }
-            finally { IsWordsLoading = false; }
+            finally { IsWordsLoading = false; await Task.Yield(); }
         });
     }
 
@@ -420,7 +424,7 @@ public partial class MainWindow : Window
     }
 
     private HashSet<string> _stopwords_ = [];
-    private readonly string _stopwords_file_ = "stopwords.txt";
+    private string _stopwords_file_ = "stopwords.txt";
 
     public string CloudWords
     {
@@ -523,6 +527,7 @@ public partial class MainWindow : Window
 
     private void LoadStopWords()
     {
+        _stopwords_file_ = System.IO.Path.Combine(AppPath, _stopwords_file_);
         if (File.Exists(_stopwords_file_))
         {
             _stopwords_ = [.. File.ReadAllLines(_stopwords_file_).Select(l => l.Trim()).Where(l => !string.IsNullOrEmpty(l))];
@@ -1024,6 +1029,13 @@ public partial class MainWindow : Window
         //cfg.Sections.Add("user", new ConfigurationSection());
         ////cfg.AppSettings.ad["userdict_file_path"] = DefaultUserDictFile;
         //cfg.Save(ConfigurationSaveMode.Modified);
+
+        if (Environment.GetCommandLineArgs().Length > 1)
+        {
+            var args = Environment.GetCommandLineArgs();
+            var files = args.Skip(1).Select(f => new FileInfo(f)).Where(fi => fi.Exists && fi.Length > 20000);
+            if (files.Any()) LoadTextFiles(files);
+        }
     }
 
     private void BuildWordsCloud_Click(object sender, RoutedEventArgs e)
