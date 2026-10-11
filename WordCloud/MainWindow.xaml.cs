@@ -22,6 +22,7 @@ namespace WordCloud;
 using Microsoft.Win32;
 using Sdcb.WordClouds;
 using SkiaSharp;
+using System.Diagnostics;
 using System.Windows.Media;
 
 /// <summary>
@@ -234,6 +235,7 @@ public partial class MainWindow : Window
     //private string DefaultStopWordFile => "stopwords.txt";
     //private string DefaultUserDictFile => ConfigurationManager.AppSettings["userdict_file_path"];
     //private string DefaultStopWordFile => ConfigurationManager.AppSettings["stopwords_file_path"];
+    private string[] ExtentionUserDicts = ConfigurationManager.AppSettings["ext_userdict_files"]?.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
 
     private WordSegmenter.ChineseSegmenter _segmentor_ = new();
 
@@ -245,6 +247,14 @@ public partial class MainWindow : Window
             //_segmentor_?.LoadUserDictWord(DefaultUserDictFile);
             //_segmentor_?.LoadUserDictWord(DefaultStopWordFile);
             LoadUserDictFile(System.IO.Path.Combine(AppPath, DefaultUserDictFile));
+            if (ExtentionUserDicts?.Any() ?? false)
+            {
+                foreach(var dict in ExtentionUserDicts)
+                {
+                    var file = System.IO.Path.IsPathRooted(dict) ? dict : System.IO.Path.Combine(AppPath, dict);
+                    LoadUserDictFile(file);
+                }
+            }
         });
     }
 
@@ -262,32 +272,48 @@ public partial class MainWindow : Window
                     using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
                     while (!sr.EndOfStream)
                     {
-                        var line = sr.ReadLine()?.Trim();
-                        if (!string.IsNullOrEmpty(line))
-                        {
-                            line = Regex.Replace(line, @"[\s\t,;]+", " ").Trim();
-                            var user_word = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                            if (user_word.Length >= 3)
-                            {
-                                var word = user_word[0].Trim();
-                                //var freq = int.TryParse(user_word[2], out int f) ? f : 0;
-                                //var tag = user_word[1];
-                                int freq = 0;
-                                var tag = string.Empty;
-                                if (int.TryParse(user_word[1], out freq))
-                                {
-                                    tag = user_word[2].Trim();
-                                }
-                                else if (int.TryParse(user_word[2], out freq))
-                                {
-                                    tag = user_word[1].Trim();
-                                }
-                                else continue;
+                        var line = sr.ReadLine()?.Trim() ?? string.Empty;
+                        if (string.IsNullOrEmpty(line) || line.StartsWith("#")) continue;
 
-                                if (!string.IsNullOrEmpty(word) && freq > 0 && !string.IsNullOrEmpty(tag))
-                                {
-                                    _segmentor_?.AddWord(word, freq, tag);
-                                }
+                        line = Regex.Replace(line, @"[\s\t,;]+", " ").Trim();
+                        var user_word = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        if (user_word.Length >= 3)
+                        {
+                            var word = user_word[0].Trim();
+                            int freq = 0;
+                            var tag = string.Empty;
+                            if (int.TryParse(user_word[1], out freq))
+                            {
+                                tag = user_word[2].Trim();
+                            }
+                            else if (int.TryParse(user_word[2], out freq))
+                            {
+                                tag = user_word[1].Trim();
+                            }
+                            else continue;
+
+                            if (!string.IsNullOrEmpty(word) && freq > 0 && !string.IsNullOrEmpty(tag))
+                            {
+                                _segmentor_?.AddWord(word, freq, tag);
+                            }
+                        }
+                        else if (user_word.Length == 2)
+                        {
+                            var word = user_word[0].Trim();
+                            int freq = 0;
+                            if (!int.TryParse(user_word[1], out freq)) continue;
+
+                            if (!string.IsNullOrEmpty(word))
+                            {
+                                _segmentor_?.AddWord(word, freq, "n");
+                            }
+                        }
+                        else if (user_word.Length == 1)
+                        {
+                            var word = user_word[0].Trim();
+                            if (!string.IsNullOrEmpty(word))
+                            {
+                                _segmentor_?.AddWord(word, 1, "n");
                             }
                         }
                     }
