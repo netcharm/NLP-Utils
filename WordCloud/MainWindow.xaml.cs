@@ -437,7 +437,7 @@ public partial class MainWindow : Window
     public int CloudWordsLimit
     {
         get => CloudWordsValue.Dispatcher.Invoke(() => int.TryParse(CloudWordsValue.Text, out int v) ? Math.Max(0, v) : 0);
-        set => CloudWordsValue.Dispatcher.Invoke(() => CloudWordsValue.Text = $"{Math.Min(500, Math.Max(1, value))}");
+        set => CloudWordsValue.Dispatcher.Invoke(() => CloudWordsValue.Text = $"{Math.Min(500, Math.Max(0, value))}");
     }
 
     public string CloudFontFamily
