@@ -420,18 +420,24 @@ public partial class MainWindow : Window
 
     public int CloudMargin
     {
-        get => CloudMarginValue.Dispatcher.Invoke(() => Math.Max(0, int.Parse(CloudMarginValue.Text)));
+        get => CloudMarginValue.Dispatcher.Invoke(() => int.TryParse(CloudMarginValue.Text, out int v) ? Math.Max(0, v) : 0);
         set => CloudMarginValue.Dispatcher.Invoke(() => CloudMarginValue.Text = $"{Math.Max(0, value)}");
     }
     public int CloudWidth
     {
-        get => CloudWidthValue.Dispatcher.Invoke(() => Math.Max(100, int.Parse(CloudWidthValue.Text)));
+        get => CloudWidthValue.Dispatcher.Invoke(() => int.TryParse(CloudWidthValue.Text, out int v) ? Math.Max(100, v) : 1024);
         set => CloudWidthValue.Dispatcher.Invoke(() => CloudWidthValue.Text = $"{Math.Max(100, value)}");
     }
     public int CloudHeight
     {
-        get => CloudHeightValue.Dispatcher.Invoke(() => Math.Max(100, int.Parse(CloudHeightValue.Text)));
+        get => CloudHeightValue.Dispatcher.Invoke(() => int.TryParse(CloudHeightValue.Text, out int v) ? Math.Max(100, v) : 1024);
         set => CloudHeightValue.Dispatcher.Invoke(() => CloudHeightValue.Text = $"{Math.Max(100, value)}");
+    }
+
+    public int CloudWordsLimit
+    {
+        get => CloudWordsValue.Dispatcher.Invoke(() => int.TryParse(CloudWordsValue.Text, out int v) ? Math.Max(0, v) : 0);
+        set => CloudWordsValue.Dispatcher.Invoke(() => CloudWordsValue.Text = $"{Math.Min(500, Math.Max(1, value))}");
     }
 
     public string CloudFontFamily
@@ -439,11 +445,13 @@ public partial class MainWindow : Window
         get => (CloudFontValue.Dispatcher.Invoke(() => CloudFontValue.Text)); 
         set => CloudFontValue.Dispatcher.Invoke(() => { CloudFontValue.Text = value; });
     }
+
     public TextOrientations CloudOrientation
     {
         get => (CloudOrientationValue.Dispatcher.Invoke(() => Enum.Parse<TextOrientations>(CloudOrientationValue.Text))); 
         set => CloudOrientationValue.Dispatcher.Invoke(() => { CloudOrientationValue.Text = value.ToString(); });
     }
+
     public CloudBGStyle CloudBG
     {
         get => (CloudBackgroundValue.Dispatcher.Invoke(() => Enum.Parse<CloudBGStyle>(CloudBackgroundValue.Text))); 
@@ -809,6 +817,7 @@ public partial class MainWindow : Window
                     .Select(x => Regex.Replace(x.Trim(), @"\t+", "\t").Split("\t")).Where(x => x.Length >= 2)
                     .Select(x => new WordScore(Score: int.Parse(x[0]), Word: x[1].Trim()))
                     .Where(x => !string.IsNullOrEmpty(x.Word) && !_stopwords_.Contains(x.Word));
+            if (CloudWordsLimit > 0) scores = scores.OrderByDescending(x => x.Score).Take(CloudWordsLimit);
             return (scores);
         }
     }
@@ -950,6 +959,7 @@ public partial class MainWindow : Window
         UTF8 = Encoding.UTF8;
 
         #region allow drag and drop text to words textbox
+        //WordsTextBox.Virtualization = VirtualizationMode.Standard;
         WordsTextBox.AllowDrop = true;
         WordsTextBox.DragOver += (s, e) =>
         {
@@ -1037,6 +1047,7 @@ public partial class MainWindow : Window
         CloudWidth = 1024;
         CloudHeight = 1024;
         CloudMargin = 0;
+        CloudWordsLimit = 0;
 
         CloudFontFamily = "Consolas";
         CloudBG = CloudBGStyle.None;
@@ -1185,18 +1196,35 @@ public partial class MainWindow : Window
 
     private void LoadWordsFreqs_Click(object sender, RoutedEventArgs e)
     {
-        OpenFileDialog dlg = new()
+        if (Keyboard.Modifiers == ModifierKeys.Control)
         {
-            AddToRecent = false,
-            AddExtension = true,
-            CheckFileExists = true,
-            Filter = "Text Files|*.txt;*.text|All Files|*.*",
-            Multiselect = false,
-            DefaultExt = "txt",
-        };
-        if (dlg.ShowDialog() == true && dlg.FileNames is not null && dlg.FileNames.Length > 0)
+            var text = WordsTextBox.Text;
+            if (text?.Length > 128)
+            {
+                IsWordsLoading = true;
+                try
+                {
+                    SegmentText(text);
+                }
+                catch (Exception ex) { ShowMessage(ex.StackTrace); }
+                //finally { IsWordsLoading = false; }
+            }
+        }
+        else if (Keyboard.Modifiers == ModifierKeys.None)
         {
-            LoadWordsFile(dlg.FileName);
+            OpenFileDialog dlg = new()
+            {
+                AddToRecent = false,
+                AddExtension = true,
+                CheckFileExists = true,
+                Filter = "Text Files|*.txt;*.text|All Files|*.*",
+                Multiselect = false,
+                DefaultExt = "txt",
+            };
+            if (dlg.ShowDialog() == true && dlg.FileNames is not null && dlg.FileNames.Length > 0)
+            {
+                LoadWordsFile(dlg.FileName);
+            }
         }
     }
 }

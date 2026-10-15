@@ -163,4 +163,7 @@
   <data name="WordsLoadingIndicator.BusyContent" xml:space="preserve">
     <value>Loading ...</value>
   </data>
+  <data name="CloudWordsLabel.Text" xml:space="preserve">
+    <value>Words:</value>
+  </data>
 </root>

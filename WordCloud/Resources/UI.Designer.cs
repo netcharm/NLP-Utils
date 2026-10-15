@@ -214,6 +214,15 @@ namespace WordCloud.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Words: 的本地化字符串。
+        /// </summary>
+        internal static string CloudWordsLabel_Text {
+            get {
+                return ResourceManager.GetString("CloudWordsLabel.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Load Text 的本地化字符串。
         /// </summary>
         internal static string LoadTextContent_Content {

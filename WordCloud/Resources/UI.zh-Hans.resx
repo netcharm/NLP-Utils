@@ -181,6 +181,9 @@
     <value>载入词频文件</value>
   </data>
   <data name="WordsLoadingIndicator.BusyContent" xml:space="preserve">
-    <value>词频数据载入中</value>
+    <value>词频数据载入中 ...</value>
+  </data>
+  <data name="CloudWordsLabel.Text" xml:space="preserve">
+    <value>词数:</value>
   </data>
 </root>

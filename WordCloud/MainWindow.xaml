@@ -10,7 +10,7 @@
         Title="Word Cloud Generator" Height="720" Width="1280" Loaded="Window_Loaded">
     <Grid Margin="4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="256" />
+            <ColumnDefinition Width="Auto" MinWidth="256" MaxWidth="320"/>
             <ColumnDefinition Width="0.618*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto" MaxHeight="80"/>
         </Grid.RowDefinitions>
         <TextBox Grid.Column="0" Grid.Row="0" Name="WordsTextBox" TextWrapping="Wrap" AcceptsReturn="True" 
-                 Margin="4" MaxWidth="400"
+                 Margin="4" MaxWidth="256"
                  FontFamily="{StaticResource MonoSpaceFamily}" FontSize="{StaticResource MonoSpaceFontSize}"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
@@ -76,6 +76,8 @@
                 SelectedColorChanged="CloudBackColorPick_SelectedColorChanged">
             </xctk:ColorPicker>
             <Button Grid.Row="1" Grid.Column="6"  x:Name="CloudMaskImagePick" x:Uid="CloudMaskImagePick" Content="&#xE197;" FontFamily="{StaticResource ExtraIconFamily}" ToolTip="Pick Mask Image" VerticalAlignment="Center" HorizontalAlignment="Left" Height="26" Width="26" Margin="4" Padding="4" Click="CloudMaskImagePick_Click" />
+            <TextBlock Grid.Row="0" Grid.Column="8" x:Name="CloudWordsLabel" x:Uid="CloudWordsLabel" Text="Words:" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="24" />
+            <TextBox Grid.Row="0" Grid.Column="9" x:Name="CloudWordsValue" x:Uid="CloudWordsValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="4" Width="64" FontFamily="{StaticResource MonoSpaceFamily}" TextChanged="CloudMarginValue_TextChanged" />
             <TextBlock Grid.Row="1" Grid.Column="8" x:Name="CloudMarginLabel" x:Uid="CloudMarginLabel" Text="Margin:" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" MinWidth="24" />
             <TextBox Grid.Row="1" Grid.Column="9" x:Name="CloudMarginValue" x:Uid="CloudMarginValue" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="4" Width="64" FontFamily="{StaticResource MonoSpaceFamily}" TextChanged="CloudMarginValue_TextChanged" />
         </Grid>
