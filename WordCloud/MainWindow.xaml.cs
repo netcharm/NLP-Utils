@@ -224,6 +224,40 @@ public partial class MainWindow : Window
             //finally { IsWordsLoading = false; }
         }
     }
+
+    private void LoadWordsFile(IEnumerable<string> files)
+    {
+        if (files is not null && files.Any())
+        {
+            IsWordsLoading = true;
+            try
+            {
+                List<string> sb = new();
+                foreach (var file in files)
+                {
+                    if (!string.IsNullOrEmpty(file) && File.Exists(file))
+                    {
+                        using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        if (fs.Length > 0)
+                        {
+                            var enc = DetectEncoding(fs);
+                            fs.Seek(0, SeekOrigin.Begin);
+                            using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
+                            var text = sr.ReadToEnd();
+                            if (!string.IsNullOrEmpty(text))
+                            {
+                                sb.AddRange(text.Split([Environment.NewLine, "\r\n", "\n\r", "\n", "\r"], StringSplitOptions.RemoveEmptyEntries| StringSplitOptions.TrimEntries));
+                            }
+                        }
+                    }
+                }
+                var words = CleanWords(sb.Where(w => !string.IsNullOrEmpty(w.Trim())));
+                WordsTextBox.Text = string.Join(Environment.NewLine, words);
+            }
+            catch (Exception ex) { ShowMessage(ex.StackTrace); }
+            finally { IsWordsLoading = false; }
+        }
+    }
     #endregion
 
     #region Word Segmenter Helper
@@ -380,25 +414,13 @@ public partial class MainWindow : Window
     private string[] SegmentWords(string text)
     {
         if (_segmentor_ is null) InitWordSegmenter();
-        return (_segmentor_?.Cut(text).Split('/', StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries).Where(w => w.Length > 1 && !Regex.IsMatch(w, @"[\+\-]?\d+\.?\d+", RegexOptions.IgnoreCase)).ToArray() ?? []);
+        return (_segmentor_?.Cut(text).Split('/', StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries).Where(w => w.Length > 1 && !Regex.IsMatch(w, @"[\+\-]?\d+\.?\d*", RegexOptions.IgnoreCase)).ToArray() ?? []);
     }
 
     private Dictionary<string, int> CountWords(IEnumerable<string> words)
     {
         var result = new Dictionary<string, int>();
         result = words.GroupBy(w => w).Where(g => g.Key.Length > 1).ToDictionary(g => g.Key, g => g.Count());
-        //foreach (var word in words)
-        //{
-        //    if (string.IsNullOrEmpty(word)) continue;
-        //    if (result.TryGetValue(word, out int value))
-        //    {
-        //        result[word] = ++value;
-        //    }
-        //    else
-        //    {
-        //        result[word] = 1;
-        //    }
-        //}
         if (_stopwords_?.Any() ?? false)
         {
             char[] trim = [ ' ', ',', '.', '\n', '\r', '：', '！', '，' ];
@@ -406,6 +428,24 @@ public partial class MainWindow : Window
             {
                 if (_stopwords_.Contains(word.Key) || string.IsNullOrEmpty(word.Key.Trim())) result.Remove(word.Key);
             }
+        }
+        return (result);
+    }
+
+    private string[] CleanWords(IEnumerable<string> words)
+    {
+        string[] result = [];
+        if (words?.Any() ?? false)
+        {
+            var freqs = words.Where(w => !string.IsNullOrEmpty(w.Trim()))
+                             .Select(w => Regex.Replace(w.Trim(), @"[\s\t,;]+", "\t").Trim()).Distinct()
+                             .Select(w => w.Split('\t', StringSplitOptions.RemoveEmptyEntries| StringSplitOptions.TrimEntries))
+                             .Where(w => w.Length > 1 && w[0].Length > 1 && !Regex.IsMatch(w[0], @"[\+\-]?\d+\.?\d*", RegexOptions.IgnoreCase))
+                             .Where(w => !(_stopwords_?.Contains(w[0]) ?? false) && int.TryParse(w[1], out int v))
+                             .GroupBy(w => w[0]).Select(w => new string[] { w.Key, w.Sum(x => int.TryParse(x[1], out int v) ? v : 0).ToString() })
+                             .ToDictionary(w => w[0], w => int.Parse(w[1]));
+            var padwidth = freqs.Max(kv => LengthCJK(kv.Key));
+            result = [.. freqs.OrderByDescending(kv => kv.Value).Select(kv => $"{PadRightCJK(kv.Key, padwidth)} {kv.Value}")];
         }
         return (result);
     }
@@ -963,7 +1003,7 @@ public partial class MainWindow : Window
         WordsTextBox.AllowDrop = true;
         WordsTextBox.DragOver += (s, e) =>
         {
-            if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText) || e.Data.GetDataPresent(DataFormats.OemText))
+            if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText) || e.Data.GetDataPresent(DataFormats.OemText) || e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 e.Effects = DragDropEffects.Copy;
             }
@@ -985,6 +1025,19 @@ public partial class MainWindow : Window
                         WordsTextBox.Text = text;
                     }
                     e.Handled = true;
+                }
+                catch { }
+            }
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                try
+                {
+                    var files = (e.Data.GetData(DataFormats.FileDrop) ?? Array.Empty<string>()) as string[];
+                    if (files is not null && files.Length > 0)
+                    {
+                        e.Handled = true;
+                        LoadWordsFile(files);
+                    }
                 }
                 catch { }
             }
@@ -1029,8 +1082,15 @@ public partial class MainWindow : Window
                     var files = (e.Data.GetData(DataFormats.FileDrop) ?? Array.Empty<string>()) as string[];
                     if (files is not null && files.Length > 0)
                     {
+                        if (s is null) return;
                         e.Handled = true;
-                        LoadTextFiles(files);
+                        //var target = VisualTreeHelper.HitTest(s as UIElement, e.GetPosition(s as UIElement)).VisualHit;
+                        var target = e.Source;
+                        //LoadWordsFreqs.IsHitTestVisible || WordsTextBox.IsHitTestVisible
+                        if (LoadWordsFreqs.IsMouseOver || WordsTextBox.IsMouseOver || target == LoadWordsFreqs)
+                            LoadWordsFile(files);
+                        else
+                            LoadTextFiles(files);
                     }
                 }
                 catch { }

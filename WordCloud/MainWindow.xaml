@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto" MaxHeight="80"/>
         </Grid.RowDefinitions>
         <TextBox Grid.Column="0" Grid.Row="0" Name="WordsTextBox" TextWrapping="Wrap" AcceptsReturn="True" 
-                 Margin="4" MaxWidth="256"
+                 Margin="4" MaxWidth="320"
                  FontFamily="{StaticResource MonoSpaceFamily}" FontSize="{StaticResource MonoSpaceFontSize}"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
