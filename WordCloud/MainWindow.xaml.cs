@@ -23,6 +23,7 @@ using Microsoft.Win32;
 using Sdcb.WordClouds;
 using SkiaSharp;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 /// <summary>
@@ -200,11 +201,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private void LoadWordsFile(string file)
+    private async void LoadWordsFile(string file)
     {
         if (!string.IsNullOrEmpty(file) && File.Exists(file))
         {
             IsWordsLoading = true;
+            await Task.Yield();
             try
             {
                 using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -213,10 +215,12 @@ public partial class MainWindow : Window
                     var enc = DetectEncoding(fs);
                     fs.Seek(0, SeekOrigin.Begin);
                     using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
-                    var text = sr.ReadToEnd();
+                    var text = await sr.ReadToEndAsync();
+                    await Task.Yield();
                     if (!string.IsNullOrEmpty(text))
                     {
                         SegmentText(text);
+                        await Task.Yield();
                     }
                 }
             }
@@ -225,11 +229,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private void LoadWordsFile(IEnumerable<string> files)
+    private async void LoadWordsFile(IEnumerable<string> files)
     {
         if (files is not null && files.Any())
         {
             IsWordsLoading = true;
+            await Task.Yield();
             try
             {
                 List<string> sb = new();
@@ -243,16 +248,20 @@ public partial class MainWindow : Window
                             var enc = DetectEncoding(fs);
                             fs.Seek(0, SeekOrigin.Begin);
                             using var sr = new StreamReader(fs, enc, detectEncodingFromByteOrderMarks: true);
-                            var text = sr.ReadToEnd();
+                            var text = await sr.ReadToEndAsync();
+                            await Task.Yield();
                             if (!string.IsNullOrEmpty(text))
                             {
                                 sb.AddRange(text.Split([Environment.NewLine, "\r\n", "\n\r", "\n", "\r"], StringSplitOptions.RemoveEmptyEntries| StringSplitOptions.TrimEntries));
+                                await Task.Yield();
                             }
                         }
                     }
                 }
                 var words = CleanWords(sb.Where(w => !string.IsNullOrEmpty(w.Trim())));
+                await Task.Yield();
                 WordsTextBox.Text = string.Join(Environment.NewLine, words);
+                await Task.Yield();
             }
             catch (Exception ex) { ShowMessage(ex.StackTrace); }
             finally { IsWordsLoading = false; }
@@ -374,6 +383,8 @@ public partial class MainWindow : Window
                 var words = SegmentWords(text);
                 if (words.Length > 0)
                 {
+                    IsWordsLoading = true;
+
                     //await Task.Yield();
                     var wordCounts = CountWords(words);
                     await Task.Yield();
@@ -1068,7 +1079,6 @@ public partial class MainWindow : Window
                     if (!string.IsNullOrEmpty(text))
                     {
                         e.Handled = true;
-
                         SegmentText(text);
                         //WordsTextBox.Text = text;
                     }
