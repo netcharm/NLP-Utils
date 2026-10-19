@@ -338,7 +338,7 @@ public partial class MainWindow : Window
             {
                 await Task.Yield();
                 var words = SegmentWords(text);
-                if (words.Any())
+                if (words.Length > 0)
                 {
                     //await Task.Yield();
                     var wordCounts = CountWords(words);
@@ -377,10 +377,10 @@ public partial class MainWindow : Window
         });
     }
 
-    private IEnumerable<string> SegmentWords(string text)
+    private string[] SegmentWords(string text)
     {
         if (_segmentor_ is null) InitWordSegmenter();
-        return (_segmentor_?.Cut(text).Split('/') ?? []);
+        return (_segmentor_?.Cut(text).Split('/', StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries).Where(w => w.Length > 1 && !Regex.IsMatch(w, @"[\+\-]?\d+\.?\d+", RegexOptions.IgnoreCase)).ToArray() ?? []);
     }
 
     private Dictionary<string, int> CountWords(IEnumerable<string> words)
@@ -816,7 +816,7 @@ public partial class MainWindow : Window
                     .Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                     .Select(x => Regex.Replace(x.Trim(), @"\t+", "\t").Split("\t")).Where(x => x.Length >= 2)
                     .Select(x => new WordScore(Score: int.Parse(x[0]), Word: x[1].Trim()))
-                    .Where(x => !string.IsNullOrEmpty(x.Word) && !_stopwords_.Contains(x.Word));
+                    .Where(x => !string.IsNullOrEmpty(x.Word) && !_stopwords_.Contains(x.Word) && !Regex.IsMatch(x.Word, @"[\+\-]?\d+\.?\d+", RegexOptions.IgnoreCase));
             if (CloudWordsLimit > 0) scores = scores.OrderByDescending(x => x.Score).Take(CloudWordsLimit);
             return (scores);
         }
